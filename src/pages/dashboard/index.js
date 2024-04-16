@@ -1,6 +1,6 @@
 import { lazy } from "react";
 
-export const AgencyListPage = lazy(() => import("./agency/AgencyListPage.jsx"));
+export const AgencyListPage = lazy(() => import("./agency/AgencyPostListPage.jsx"));
 export const AddPostPage = lazy(() => import("./post/AddPost.jsx"));
 export const ViewPostPage = lazy(() => import("./post/ViewPost.jsx"));
 export const UpdatePostPage = lazy(() => import("./post/UpdatePost.jsx"));

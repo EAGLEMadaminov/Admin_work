@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -6,6 +6,13 @@ import { Button } from "src/components/ui/button";
 import { Input } from "src/components/ui/input";
 import axiosIsntance from "src/utils/lib/axios";
 import { useNavigate } from "react-router-dom";
+import AuthCodeInput from "react-auth-code-input";
+import { toast } from "react-toastify";
+import {
+  grant_type,
+  client_id,
+  client_secret,
+} from "src/utils/util/constants.js";
 import {
   Form,
   FormControl,
@@ -16,14 +23,11 @@ import {
 } from "src/components/ui/form";
 
 const formSchame = z.object({
-  phone_number: z.string().min(13, {
-    message: "Please enter correct phone ",
-  }),
   phone_number_2: z.string().min(13, {
     message: "Please enter correct phone",
   }),
-  password: z.string().min(6, {
-    message: "Password must be least 6 characters",
+  password: z.string().min(8, {
+    message: "Password must be least 8 characters",
   }),
   name: z.string().min(2, {
     message: "Required Field",
@@ -40,18 +44,28 @@ const formSchame = z.object({
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [imageSrc, setImageSrc] = useState("");
+  const token = localStorage.getItem("access_token");
+  const [sendImage, setSendImage] = useState("");
+  const [phoneValue, setPhoneValue] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [showActivation, setShowActivation] = useState(false);
+  const [password, setPassword] = useState("");
   const form = useForm({
     resolver: zodResolver(formSchame),
     defaultValues: {
-      phone_number: "",
       phone_number_2: "",
       name: "",
       licence_number: "",
       address: "",
       tg_username: "",
+      licence_image: "",
     },
   });
   const onSubmit = async (data) => {
+    console.log(data);
+    data.licence = sendImage;
+    data.phone_number = phoneValue;
     console.log(data);
     try {
       let { data: agency } = await axiosIsntance.post(
@@ -61,6 +75,83 @@ const RegisterForm = () => {
       if (agency) {
         console.log(agency);
         navigate("/dashboard/agency");
+        setShowActivation(true);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.detail);
+      toast.error(error?.response?.data?.non_field_errors[0]);
+      toast.error(error?.response?.data?.tg_username?.detail);
+      toast.error(error?.response?.data[0]);
+    }
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageSrc(reader.result);
+    };
+    reader.readAsDataURL(file);
+    const form = new FormData();
+    form.append("file", file);
+    try {
+      let { data: imageId } = await axiosIsntance.post("/image-upload/", form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (imageId && imageId.image) {
+        setSendImage(imageId.image);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCheckPhoneValueBtn = (value) => {
+    setPhoneValue(value);
+    if (!value.startsWith("+998")) {
+      setPhoneError("Xatolik raqam +998 bilan boshlanishi kerak");
+    } else if (value.length < 13) {
+      setPhoneError("Raqamlar 13 ta bo'lishi kerak");
+    } else if (value.length >= 13) {
+      setPhoneError("");
+      const inputValue = value.slice(0, 13);
+      setPhoneValue(inputValue);
+    }
+  };
+  const handleActivation = async (value) => {
+    if (value.length == 5) {
+      let data = {};
+      data.code = value;
+      data.phone_number = phoneValue;
+
+      try {
+        let { data: activateInfo } = await axiosIsntance.post(
+          "/auth/activation/",
+          data
+        );
+        if (activateInfo) {
+          console.log(activateInfo);
+          localStorage.setItem("access_token", activateInfo.access_token);
+          localStorage.setItem("refresh_token", activateInfo.refresh_token);
+          setShowActivation(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const sendToActivationBtn = async () => {
+    let phone = {};
+    phone.phone_number = phoneValue;
+    console.log(phone);
+    try {
+      let { data } = await axiosIsntance.post("/auth/sign-up/", phone);
+      if (data) {
+        console.log(data);
+        setShowActivation(true);
       }
     } catch (error) {
       console.log(error);
@@ -70,34 +161,58 @@ const RegisterForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 w-[500px] mx-auto"
+        className="space-y-3 w-[500px] mx-auto"
       >
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-end">
           <FormField
             control={form.control}
             name="phone_number"
             render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Phone</FormLabel>
+              <FormItem
+                className="w-full"
+                onChange={(e) => handleCheckPhoneValueBtn(e.target.value)}
+                value={phoneValue}
+              >
+                <FormLabel>Telefon raqam</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your phone number" {...field} />
+                  <Input
+                    placeholder="+998"
+                    className="border-[#222] "
+                    value={phoneValue}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <button className="bg-blue-500 text-white p-2 x-3 rounded-[10px] mt-7">
-            verification
-          </button>
+          <Button type="button" onClick={sendToActivationBtn}>
+            Verify
+          </Button>
         </div>
+        {showActivation ? (
+          <div className="flex w-[200px] activation-code-div">
+            <AuthCodeInput length={5} onChange={handleActivation} />
+          </div>
+        ) : (
+          ""
+        )}
+        {phoneError ? (
+          <span className="text-[14px] text-red-500">{phoneError}</span>
+        ) : (
+          ""
+        )}
         <FormField
           control={form.control}
           name="phone_number_2"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone 2</FormLabel>
+            <FormItem onChange={(e) => setPassword(e.target.value)}>
+              <FormLabel>Qo&apos;shimcha telefon raqam</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your phone number" {...field} />
+                <Input
+                  placeholder="+998"
+                  className="border-[#222]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -108,10 +223,12 @@ const RegisterForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem className="w-full relative">
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Kod-parol</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter your password"
+                  placeholder="Esda qolarli parol kiriting"
+                  className="border-[#222]"
+                  value={password}
                   type={showPassword ? "text" : "password"}
                   {...field}
                 />
@@ -158,35 +275,31 @@ const RegisterForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Agency nomi</FormLabel>
               <FormControl>
-                <Input placeholder="Enter agecy name" {...field} />
+                <Input
+                  placeholder="Agency nomini kiriting"
+                  {...field}
+                  className="border-[#222]"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="licence_number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>License number</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter license number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>Manzil</FormLabel>
               <FormControl>
-                <Input placeholder="Agency address" {...field} />
+                <Input
+                  placeholder="Agency joylashgan joy"
+                  className="border-[#222]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -199,12 +312,65 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel>Tg Username</FormLabel>
               <FormControl>
-                <Input placeholder="TG Username" {...field} />
+                <Input
+                  placeholder="TG Username"
+                  className="border-[#222]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="licence_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Litsenziya raqami</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="l34-3d3-4"
+                  className="border-[#222] "
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <label htmlFor="image" className="font-semibold text-[14px] mt-3">
+          Litsenziya surati
+        </label>
+        <div className="flex flex-wrap gap-2">
+          <div
+            className={`w-[180px] h-[150px] gap-3 flex item-center mx-auto justify-center flex-col text-center ${"bg-[#FFFBEF]"}`}
+          >
+            <input
+              type="file"
+              className="opacity-0 absolute  h-[200px]"
+              id="image"
+              onChange={handleImageChange}
+              accept="image/png, image/jpg, image/jpeg, image/webp, image/heic"
+            />
+
+            {imageSrc ? (
+              <img src={imageSrc} />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-camera mx-auto inline"
+                viewBox="0 0 16 16"
+              >
+                <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z" />
+                <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0" />
+              </svg>
+            )}
+          </div>
+        </div>
         <Button type="submit" className="w-[100%] bg-[#7F56D9]">
           Submit
         </Button>

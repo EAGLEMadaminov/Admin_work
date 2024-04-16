@@ -70,7 +70,7 @@ let posts = [
   },
 ];
 
-countries = [
+const countries = [
   "Afghanistan",
   "Albania",
   "Algeria",

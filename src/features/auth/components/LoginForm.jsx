@@ -28,7 +28,6 @@ const formSchema = z.object({
   }),
 });
 
-
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -43,14 +42,15 @@ const LoginForm = () => {
     data.grant_type = grant_type;
     data.client_id = client_id;
     data.client_secret = client_secret;
+    console.log(data);
     try {
       let { data: agencyInfo } = await axiosIsntance.post(
         "/admin/agency/sign-in/",
         data
       );
       if (agencyInfo) {
-        localStorage.setItem("refresh_token", data.refresh_token);
-        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("refresh_token", agencyInfo.refresh_token);
+        localStorage.setItem("access_token", agencyInfo.access_token);
         navigate("/dashboard");
       }
     } catch (error) {
