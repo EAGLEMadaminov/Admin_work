@@ -28,7 +28,7 @@ const MainPage = () => {
   return (
     <div>
       mainPage
-      <Link to="/auth/sing-up">Go to sign up</Link>
+      <Link to="/auth/sign-up">Go to sign up</Link>
     </div>
   );
 };
