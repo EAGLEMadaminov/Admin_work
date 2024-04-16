@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosIsntance from "src/utils/lib/axios";
 
 const MainPage = () => {
@@ -25,7 +25,12 @@ const MainPage = () => {
       }
     })();
   }, [token]);
-  return <div>mainPage</div>;
+  return (
+    <div>
+      mainPage
+      <Link to="/auth/sing-up">Go to sign up</Link>
+    </div>
+  );
 };
 
 export default MainPage;
