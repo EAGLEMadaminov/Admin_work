@@ -8,6 +8,7 @@ import {
   AgencyInfoPage,
   NotificationPage,
   EditInfoPage,
+  MainPage,
 } from "../../pages/dashboard/index.js";
 import DashboardLayout from "../../layouts/dashboard/DashboardLayout";
 
@@ -16,6 +17,7 @@ const dashboarRoutes = {
   element: (
     <DashboardLayout>
       <Suspense fallback={<>Loading...</>}>
+        <MainPage />
         <Outlet />
       </Suspense>
     </DashboardLayout>
