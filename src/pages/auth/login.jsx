@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../../features/auth/components/LoginForm.jsx";
 import { Button } from "../../components/ui/button";
+import { Link } from "react-router-dom";
+import Register from "./register";
 
 const Login = () => {
   return (
@@ -22,6 +24,9 @@ const Login = () => {
       </div>
       <div className="mt-[32px]">
         <LoginForm />
+        <p className="text-center mt-3 text-[14px] text-[#7F56D9]">
+          No account yet go to <Link to="/auth/sign-up">Register</Link>
+        </p>
       </div>
     </div>
   );

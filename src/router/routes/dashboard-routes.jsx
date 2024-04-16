@@ -12,7 +12,7 @@ import {
 import DashboardLayout from "../../layouts/dashboard/DashboardLayout";
 
 const dashboarRoutes = {
-  path: "dashboard/agency",
+  path: "dashboard",
   element: (
     <DashboardLayout>
       <Suspense fallback={<>Loading...</>}>
@@ -20,6 +20,9 @@ const dashboarRoutes = {
       </Suspense>
     </DashboardLayout>
   ),
+  children: [
+    {
+      path: "agency",
       children: [
         {
           path: "posts",
@@ -60,6 +63,8 @@ const dashboarRoutes = {
           element: <NotificationPage />,
         },
       ],
+    },
+  ],
 };
 
 export default dashboarRoutes;
