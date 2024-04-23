@@ -1,8 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosIsntance from "src/utils/lib/axios";
-import axios from "axios";
 import { addDays, format } from "date-fns";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 
@@ -17,6 +16,9 @@ const PostForm = () => {
   const [showCityFly, setShowCityFly] = useState(false);
   const [flyCityList, setFlyCityList] = useState([]);
   const [images, setImages] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [options, setOptions] = useState([]);
+  const navigate = useNavigate();
   // const city1Ref = useRef(null);
   const city2Ref = useRef(null);
   let token = localStorage.getItem("access_token");
@@ -70,7 +72,6 @@ const PostForm = () => {
       };
       reader.readAsDataURL(file);
     }
-    console.log(array);
   };
 
   const searchFunction = async (value) => {
@@ -97,6 +98,7 @@ const PostForm = () => {
     const value = `/city/?country=${choosenCountry}&city=${e.target.value}`;
     const res = await searchFunction(value);
     if (res) {
+      console.log(res);
       setShowCities(true);
       setCityList(res.city_list);
     }
@@ -108,6 +110,7 @@ const PostForm = () => {
     const res = await searchFunction(value);
     if (res) {
       setShowCityFly(true);
+
       setFlyCityList(res.city_list);
     }
   };
@@ -117,11 +120,22 @@ const PostForm = () => {
   };
 
   const handleFormSubmit = async (data) => {
-    console.log(images);
     let hotel = {};
     hotel.name = data.hotel_name;
     hotel.stars = data.hotel_stars;
     hotel.link = data.hotel_link;
+    data.starting_date = format(date.from, "yyyy-MM-dd");
+    data.ending_date = format(date.to, "yyyy-MM-dd");
+    data.images = images;
+    data.city_to = choosenCity.id;
+    data.city_from = cityFly.id;
+    delete data.hotel_name;
+    delete data.hotel_stars;
+    delete data.hotel_link;
+    console.log(hotel);
+    data.activities = Array.from(new Set(activities));
+    data.options = Array.from(new Set(options));
+    console.log(data);
     try {
       let { data: hotelId } = await axiosIsntance.post(
         "/admin/agency/hotels/create/",
@@ -133,14 +147,28 @@ const PostForm = () => {
         }
       );
       if (hotelId) {
-        console.log(hotelId);
+        data.hotels = [hotelId?.data?.id];
       }
     } catch (error) {
       console.log(error);
     }
-    console.log(cityFly);
-    console.log("ok");
     console.log(data);
+    try {
+      let { data: agency } = await axiosIsntance.post(
+        "/admin/agency/packages/create/",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (agency) {
+        navigate("/dashboard/agency/posts");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -231,7 +259,7 @@ const PostForm = () => {
               className="border border-[#000] w-full p-2  mt-1 mb-5 rounded-lg"
               placeholder="Borish shahrini kiriting"
               onChange={handleChooseCity}
-              value={choosenCity}
+              value={choosenCity.name}
             />
 
             {cityList.length > 0 && showCities ? (
@@ -246,7 +274,7 @@ const PostForm = () => {
                         // city2Ref.current.focus();
                       }}
                     >
-                      {city}
+                      {city.name}
                     </li>
                   );
                 })}
@@ -269,7 +297,7 @@ const PostForm = () => {
               // ref={city2Ref}
               {...register("city_from", { required: true })}
               onChange={handleFlyCityBtn}
-              value={cityFly}
+              value={cityFly.name}
             />
 
             {flyCityList.length > 0 && showCityFly ? (
@@ -283,7 +311,7 @@ const PostForm = () => {
                         setShowCityFly(false);
                       }}
                     >
-                      {item}
+                      {item.name}
                     </li>
                   );
                 })}
@@ -347,11 +375,11 @@ const PostForm = () => {
                 {...register("price", { required: true })}
                 id="tour_price"
               />
-              <select {...register("price_for")}>
+              {/* <select {...register("price_for")}>
                 <option value="sum">sum</option>
                 <option value="euro">euro</option>
                 <option value="dollar">dollar</option>
-              </select>
+              </select> */}
             </div>
           </div>
 
@@ -381,7 +409,7 @@ const PostForm = () => {
               name="starts"
               id="stars"
               {...register("hotel_stars")}
-              className="appearance-none w-[30px] text-center underline "
+              className="appearance-none w-[30px] text-center border-[#222] border rounded-lg"
             >
               <option value="1">1</option>
               <option value="2">2</option>
@@ -407,30 +435,38 @@ const PostForm = () => {
             <label htmlFor="umra">Umra</label>
             <input
               id="umra"
-              {...register("umra")}
               type="checkbox"
               className="w-4 h-4"
+              onChange={(e) => {
+                e.target.checked ? setActivities([...activities, 1]) : "";
+              }}
             />
             <label htmlFor="nature">Tabiat</label>
             <input
               className="w-4 h-4"
               type="checkbox"
               id="nature"
-              {...register("nature")}
+              onChange={(e) => {
+                e.target.checked ? setActivities([...activities, 2]) : "";
+              }}
             />
             <label htmlFor="ocean">Dengiz</label>
             <input
               className="w-4 h-4"
               type="checkbox"
               id="ocean"
-              {...register("ocean")}
+              onChange={(e) => {
+                e.target.checked ? setActivities([...activities, 3]) : "";
+              }}
             />
             <label htmlFor="museum">Muzeyga sayohat</label>
             <input
               className="w-4 h-4"
               type="checkbox"
               id="museum"
-              {...register("museum")}
+              onChange={(e) => {
+                e.target.checked ? setActivities([...activities, 4]) : "";
+              }}
             />
           </div>
           <h2 className="text-[24px] text-[#101828] font-[600] mt-5">
@@ -480,37 +516,45 @@ const PostForm = () => {
           <div className="flex gap-3">
             <div className="flex items-center gap-2">
               <input
-                id="avia"
+                id="bilet"
                 type="checkbox"
-                {...register("ticket")}
+                onChange={(e) =>
+                  e.target.checked ? setOptions([...options, 1]) : ""
+                }
                 className="w-4 h-4"
               />
-              <label htmlFor="avia">Avia bilet</label>
+              <label htmlFor="bilet">Avia bilet</label>
             </div>
             <div className="flex items-center gap-2">
               <input
-                id="transport"
+                id="mashina"
                 type="checkbox"
                 className=" w-4 h-4"
-                {...register("transport")}
+                onChange={(e) =>
+                  e.target.checked ? setOptions([...options, 2]) : ""
+                }
               />
-              <label htmlFor="transport">Transport</label>
+              <label htmlFor="mashina">Transport</label>
             </div>
             <div className="flex items-center gap-2">
               <input
                 id="insurance"
                 type="checkbox"
                 className=" w-4 h-4"
-                {...register("insurance")}
+                onChange={(e) =>
+                  e.target.checked ? setOptions([...options, 3]) : ""
+                }
               />
-              <label htmlFor="insurance">Tibbiy sug'urta</label>
+              <label htmlFor="insurance">Tibbiy sug&apos;urta</label>
             </div>
             <div className="flex items-center gap-2">
               <input
                 id="viza"
                 type="checkbox"
-                className=" w-4 h-4"
-                {...register("viza")}
+                className="w-4 h-4"
+                onChange={(e) =>
+                  e.target.checked ? setOptions([...options, 4]) : ""
+                }
               />
               <label htmlFor="viza">Rasmiy viza</label>
             </div>
@@ -519,7 +563,9 @@ const PostForm = () => {
                 id="meal"
                 type="checkbox"
                 className=" w-4 h-4"
-                {...register("meal")}
+                onChange={(e) =>
+                  e.target.checked ? setOptions([...options, 5]) : ""
+                }
               />
               <label htmlFor="meal">Taom (2-3) mahal</label>
             </div>

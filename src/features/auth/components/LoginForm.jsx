@@ -7,6 +7,9 @@ import { Input } from "/src/components/ui/input";
 import { Link } from "react-router-dom";
 import axiosIsntance from "src/utils/lib/axios";
 import { useNavigate } from "react-router-dom";
+import ReactInputMask from "react-input-mask";
+import { useDispatch, useSelector } from "react-redux";
+import { changePassword } from "src/redux/slices/auth";
 import {
   Form,
   FormControl,
@@ -31,6 +34,8 @@ const formSchema = z.object({
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,11 +43,16 @@ const LoginForm = () => {
       password: "",
     },
   });
+  const formatChars = {
+    "-": "[0-9]",
+  };
   const onSubmit = async (data) => {
     data.grant_type = grant_type;
     data.client_id = client_id;
     data.client_secret = client_secret;
+    data.username = data.username.replace(/\s/g, "");
     console.log(data);
+
     try {
       let { data: agencyInfo } = await axiosIsntance.post(
         "/admin/agency/sign-in/",
@@ -61,7 +71,7 @@ const LoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 w-[500px] mx-auto"
+        className="space-y-6 lg:space-y-8 w-[280px] sm:w-[400px] mx-auto"
       >
         <FormField
           control={form.control}
@@ -70,7 +80,13 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Phone</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your phone number" {...field} />
+                <ReactInputMask
+                  formatChars={formatChars}
+                  mask="+998 -- --- -- --"
+                  placeholder="+998"
+                  {...field}
+                  className="w-full border p-2 px-3 rounded-lg border-[#222]"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -86,6 +102,7 @@ const LoginForm = () => {
                 <Input
                   placeholder="Enter your password"
                   type={showPassword ? "text" : "password"}
+                  className="boder border-[#222] rounded-lg"
                   {...field}
                   style={{ outline: "none" }}
                 />
@@ -127,10 +144,17 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        <Link className="block text-right text-[#7F56D9]">Forgot password</Link>
-        <Button type="submit" className="w-[100%] bg-[#7F56D9]">
-          Submit
-        </Button>
+        <div className="flex justify-between">
+          <button
+            className="block text-right underline text-[14px] text-[#0260E4]"
+            onClick={() => dispatch(changePassword(true))}
+          >
+            Forgot Password?
+          </button>
+          <Button type="submit" className="w-[50%] bg-[#0B77E6]">
+            Submit
+          </Button>
+        </div>
       </form>
     </Form>
   );

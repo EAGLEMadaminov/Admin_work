@@ -8,7 +8,6 @@ import {
   AgencyInfoPage,
   NotificationPage,
   EditInfoPage,
-  MainPage,
 } from "../../pages/dashboard/index.js";
 import DashboardLayout from "../../layouts/dashboard/DashboardLayout";
 
@@ -17,7 +16,6 @@ const dashboarRoutes = {
   element: (
     <DashboardLayout>
       <Suspense fallback={<>Loading...</>}>
-        <MainPage />
         <Outlet />
       </Suspense>
     </DashboardLayout>
@@ -25,7 +23,12 @@ const dashboarRoutes = {
   children: [
     {
       path: "agency",
+
       children: [
+        {
+          index: true,
+          element: <AgencyInfoPage />,
+        },
         {
           path: "posts",
           children: [
