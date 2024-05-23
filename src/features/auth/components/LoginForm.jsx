@@ -71,22 +71,42 @@ const LoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 lg:space-y-8 w-[280px] sm:w-[400px] mx-auto"
+        className="space-y-6 lg:space-y-3 w-[280px] sm:w-[400px] mx-auto"
       >
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone</FormLabel>
+              <FormLabel className="text-[#004280] text-[14px] ">
+                Email
+              </FormLabel>
               <FormControl>
-                <ReactInputMask
-                  formatChars={formatChars}
-                  mask="+998 -- --- -- --"
-                  placeholder="+998"
-                  {...field}
-                  className="w-full border p-2 px-3 rounded-lg border-[#222]"
-                />
+                <div className="flex items-center border rounded-lg px-3">
+                  <span>
+                    <svg
+                      width="16"
+                      height="12"
+                      viewBox="0 0 16 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2.51563 2.0625L7.51973 5.65519C7.80867 5.86263 8.19133 5.86263 8.48027 5.65519L13.4844 2.0625M2.9375 11.25H13.0625C13.9945 11.25 14.75 10.4665 14.75 9.5V2.5C14.75 1.5335 13.9945 0.75 13.0625 0.75H2.9375C2.00552 0.75 1.25 1.5335 1.25 2.5V9.5C1.25 10.4665 2.00552 11.25 2.9375 11.25Z"
+                        stroke="#9BB8CF"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <Input
+                    type="email"
+                    {...field}
+                    className="border-none placeholder:text-[#9BB8CF] focus-visible:ring-0 focus-visible:ring-offset-0 "
+                    placeholder="Введите почту"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -97,15 +117,35 @@ const LoginForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem className="w-full relative">
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="text-[#004280] text-[14px] ">
+                Пароль
+              </FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enter your password"
-                  type={showPassword ? "text" : "password"}
-                  className="boder border-[#222] rounded-lg"
-                  {...field}
-                  style={{ outline: "none" }}
-                />
+                <div className="flex items-center px-3 border rounded-lg">
+                  <span>
+                    <svg
+                      width="15"
+                      height="16"
+                      viewBox="0 0 15 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M2.625 5.66667V5C2.625 2.78413 4.7994 1 7.5 1C10.2006 1 12.375 2.78413 12.375 5V5.66667M2.625 5.66667C1.73125 5.66667 1 6.26667 1 7V13.6667C1 14.4 1.73125 15 2.625 15H12.375C13.2688 15 14 14.4 14 13.6667V7C14 6.26667 13.2688 5.66667 12.375 5.66667M2.625 5.66667H12.375"
+                        stroke="#9BB8CF"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
+                  <Input
+                    placeholder="Enter your password"
+                    type={showPassword ? "text" : "password"}
+                    className=" focus-visible:ring-0 placeholder:text-[#9BB8CF] focus-visible:ring-offset-0 border-none"
+                    {...field}
+                    style={{ outline: "none" }}
+                  />
+                </div>
               </FormControl>
               <button
                 className="flex items-center absolute right-2 top-[35px] "
@@ -144,16 +184,19 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        <div className="flex justify-between">
-          <button
-            className="block text-right underline text-[14px] text-[#0260E4]"
-            onClick={() => dispatch(changePassword(true))}
-          >
-            Forgot Password?
-          </button>
-          <Button type="submit" className="w-[50%] bg-[#0B77E6]">
-            Submit
-          </Button>
+        <Button type="submit" className="w-[100%] bg-[#004280]">
+          Войти
+        </Button>
+        <button
+          className="block ml-auto text-[14px] text-main font-[600]"
+          onClick={() => dispatch(changePassword(true))}
+        >
+          Забыли пароль?
+        </button>
+        <div className="flex items-center ">
+          <span className="h-[1px] bg-[#D1DCE5] block w-[45%]"></span>
+          <p className="px-3 text-[#D1DCE5] font-[500]">Или</p>
+          <span className="h-[1px] bg-[#D1DCE5] block w-[45%]"></span>
         </div>
       </form>
     </Form>

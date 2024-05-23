@@ -1,7 +1,7 @@
 import login from "../../assets/login3.jpg";
 import LoginForm from "../../features/auth/components/LoginForm.jsx";
 import { Link } from "react-router-dom";
-import Image from "src/assets/login.jpeg";
+import Image from "src/assets/auth/auth_image.png";
 import { useSelector } from "react-redux";
 import ResetPassword from "src/features/auth/components/ResetPassword";
 
@@ -15,7 +15,7 @@ const Login = () => {
       <div className="flex items-center justify-center w-[45%] h-[100vh] flex-col">
         <div>
           <div className="flex justify-center items-center">
-            <img src={login} alt="sigin logo" className="w-[80px] h-[80px]" />
+            {/* <img src={login} alt="sigin logo" className="w-[80px] h-[80px]" /> */}
           </div>
         </div>
         {state.isForgotPassword ? (
@@ -26,24 +26,54 @@ const Login = () => {
             <ResetPassword />
           </div>
         ) : (
-          <div>
+          <div className="w-[400px]">
             <div className="flex flex-col justify-center items-center mt-[10px]">
-              <h2 className="text-[24px] sm:text-[30px] text-[#101828] font-bold text-center">
-                Log in to your account
+              <h2 className="text-[24px] sm:text-[28px] text-[#1B2126] font-[600] text-center">
+                Добро пожаловать!
               </h2>
-              <h5 className="text-[#475467] font-[400] mt-[12px] text-center">
-                Welcome back! Please enter your details.
+              <h5 className="text-main font-[400] mt-[12px] text-center">
+                Пожалуйста, введите свои учетные данные для входа в систему.
               </h5>
             </div>
             <div className="mt-[20px]">
               <LoginForm />
-              <p className="text-center  mt-3 text-[14px] text-gray-400">
-                Don’t you have an account?
+              <div className="flex justify-between my-5">
+                <button className="py-[5px] flex items-center text-[12px] px-[10px] text-white font-[500] rounded-lg bg-[#FF9B06]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-google mr-2"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
+                  </svg>
+                  Sign up with Google
+                </button>
+                <button className="py-[5px] flex items-center text-[12px] px-[10px] border rounded-lg border-[#004280] text-[#004280] font-[500]">
+                  <svg
+                    width={16}
+                    height={16}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 320 512"
+                    className="mr-2"
+                  >
+                    <path
+                      fill="#004280"
+                      d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"
+                    />
+                  </svg>
+                  Sign up with Facebook
+                </button>
+              </div>
+              <p className="text-center  mt-[100px] text-[14px] text-main">
+                У вас нет учетной записи?
                 <Link
                   to="/auth/sign-up"
-                  className="text-[#0260E4]  font-semibold ml-2"
+                  className="text-[#004280]  font-bold ml-2"
                 >
-                  Sign Up
+                  Зарегистрируйтесь
                 </Link>
               </p>
             </div>
