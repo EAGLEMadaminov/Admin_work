@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { styles } from "./style";
-import PostList from "src/features/agency/post/PostList";
-import { posts } from "src/utils/util/fakeData";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosIsntance from "src/utils/lib/axios";
+import CustomDropdown from "src/components/CustimDropdown";
+import { agencies } from "src/utils/util/fakeData";
+import MainTable from "src/components/MainTable";
 
 const AgebcyListPage = () => {
-  const [postsList, setPostsList] = useState([]);
   let token = localStorage.getItem("access_token");
+  const [packages, setPackages] = useState(agencies);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    (async function getAllPosts() {
+    (async function getAgency() {
       try {
-        let { data } = await axiosIsntance.get("/admin/agency/packages/", {
+        let { data } = await axiosIsntance.get("/admin/agency/me/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         if (data) {
-          setPostsList(data);
+          console.log(data);
+          navigate("/dashboard/agency");
+        } else {
+          navigate("/auth/sign-up");
         }
       } catch (error) {
         console.log(error);
@@ -27,58 +31,103 @@ const AgebcyListPage = () => {
   }, [token]);
 
   return (
-    <div className="w-[80%] px-10">
-      <h2 className="text-main text-[30px] font-[600]">My posts</h2>
-      <div className={`${styles.flexCenter} my-5 justify-between`}>
-        <div className={`${styles.flexCenter} justify-between   pl-2 w-[80%]`}>
-          <div className="flex border-[#222] border w-full pl-4 rounded-lg">
-            <input
-              type="search "
-              placeholder="Search"
-              className="w-full outline-none"
-            />
-            <button className="border flex items-center rounded-lg ml-3 bg-[#7F56D9] text-white px-5 ">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                fill="currentColor"
-                className="bi bi-search my-3 mr-1"
-                viewBox="0 0 16 16"
-              >
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-              </svg>{" "}
-              Search
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className={`${styles.flexCenter} justify-end w-[80%]`}>
-        <div className="border border-[#222] rounded-lg px-4 py-2 flex gap-4">
-          <button>Sort by date</button>
-          <button>Sort by price</button>
-        </div>
-        <button className="border  rounded-lg ml-3 bg-[#6d44c5] text-white py-2 px-3">
-          <Link
-            to="/dashboard/agency/posts/add"
-            className="flex items-center gap-1"
-          >
+    <div className="bg-[white] h-[100vh]">
+      <div className="flex justify-between border-b  p-7">
+        <h2 className="text-text text-[24px] font-[600]">Мои объявления</h2>
+
+        <div className="flex gap-5 items-center">
+          <button className="p-3 rounded-[10px] bg-[#EDF2F6] text-text ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="16"
+              height="16"
               fill="currentColor"
-              className="bi bi-plus"
+              className="bi bi-bell-fill"
               viewBox="0 0 16 16"
             >
-              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+              <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
             </svg>
-            Create
-          </Link>
-        </button>
+          </button>
+
+          <CustomDropdown />
+        </div>
       </div>
-      <div>
-        <PostList data={posts} />
+      <div className="body  w-[calc(100vw-250px)] p-7">
+        {packages.length > 0 ? (
+          <div>
+            <div className="flex w-full justify-between ">
+              <div className="flex gap-[10px] items-center">
+                <button className="text-[#FF9B06]">
+                  <svg
+                    width="20"
+                    height="21"
+                    viewBox="0 0 20 21"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect
+                      x="0.5"
+                      y="1"
+                      width="19"
+                      height="19"
+                      rx="5.5"
+                      fill="white"
+                    />
+                    <rect
+                      x="0.5"
+                      y="1"
+                      width="19"
+                      height="19"
+                      rx="5.5"
+                      stroke="#FF9B06"
+                    />
+                    <path
+                      d="M14.6668 7L8.25016 13.4167L5.3335 10.5"
+                      stroke="#FF9B06"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <p className="text-[#B3C6D9]">Выбрать</p>
+              </div>
+              <button className="bg-[#004280] p-2 px-[15px] text-white rounded-[10px] text-[14px]">
+                Добавить объявление
+              </button>
+            </div>
+            <div className="bg-[#00428008] p-5 rounded-[15px] mt-[20px]">
+              <MainTable data={packages} />
+              <div className="pagenation mt-5 font-[500] flex justify-between">
+                <button className="py-2 px-[14px] text-[#344054] rounded-[8px] bg-white border">
+                  Предыдущая
+                </button>
+                <p className="text-[14px] font-[500]">
+                  Страница <span>1</span> из <span>3</span>
+                </p>
+                <button className="py-2 px-[14px]  rounded-[8px] bg-white border">
+                  Следующая
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center h-[calc(100vh-200px)]">
+            <button className="p-2 rounded-[10px] items-center bg-[#EDF2F6] text-text flex gap-[10px]">
+              Добавить объявление{" "}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-plus-circle-fill"
+                viewBox="0 0 16 16"
+              >
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
