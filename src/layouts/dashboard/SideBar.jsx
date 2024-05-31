@@ -1,89 +1,93 @@
 import React from "react";
-import Login from "../../assets/login3.jpg";
 import { Link } from "react-router-dom";
+import Voice from "../../assets/icons/voice.png";
+import List from "../../assets/icons/list.png";
+import Chart from "../../assets/icons/chart.png";
+import Help from "../../assets/icons/help.png";
+
 const SideBar = () => {
   return (
-    <div className="p-7  bg-white">
-      <div className="flex items-center gap-3">
-        <img src={Login} alt="" className="w-[50px] h-[50px]" />
-        <h3 className="text-[#101828] font-bold">Untitled UI</h3>
+    <div className="py-7 pl-7 pr-4 w-[250px]  bg-[#00428008] flex flex-col justify-between h-[100vh] fixed">
+      <div>
+        <div className="w-[180px]">
+          <h3 className="text-text font-[400] text-[30px]">
+            Tour <span className="text-[#FF9B06]">Agency</span>{" "}
+          </h3>
+          <p className="text-[#1B2126] text-[12px]">
+            Все туры в одном месте – открой мир с нами!
+          </p>
+        </div>
+
+        <ul className="flex flex-col w-[100%] gap-[10px] mt-[20px] text-[14px] font-[500]">
+          <li>
+            <Link
+              to="/dashboard"
+              className="flex items-center  bg-[#0042800F] p-3 rounded-lg gap-2 w-full text-text"
+            >
+              <img
+                src={Voice}
+                alt="Voice icon image "
+                className="w-[20px] h-[20px]"
+              />
+              Мои объявления
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/dashboard/agency/posts"
+              className="flex items-center hover:bg-[#0042800F] p-3 rounded-lg gap-2 text-text"
+            >
+              <img
+                src={List}
+                alt="List icon image"
+                className="w-[20px] h-[20px]"
+              />
+              Заявки
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/dashboard/agency/notifications"
+              className="flex items-center hover:bg-[#0042800F] gap-2 p-3 rounded-lg text-text"
+            >
+              <img
+                src={Chart}
+                alt="image icon image"
+                className="w-[20px] h-[20px]"
+              />
+              Статистика
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/dashboard/agency"
+              className="flex items-center hover:bg-[#0042800F] p-3 rounded-lg  gap-2 text-text"
+            >
+              <img
+                src={Help}
+                alt="Help icon image"
+                className="w-[20px] h-[20px]"
+              />
+              Помощь
+            </Link>
+          </li>
+        </ul>
       </div>
-      <div className="flex border p-2 my-5 items-center">
+
+      <button className="flex items-center gap-[10px] w-[90%] p-[10px]  rounded-lg justify-center bg-[#FF9B06] text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"
           fill="currentColor"
-          className="bi bi-search mr-2"
+          className="bi bi-rocket-takeoff-fill"
           viewBox="0 0 16 16"
         >
-          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+          <path d="M12.17 9.53c2.307-2.592 3.278-4.684 3.641-6.218.21-.887.214-1.58.16-2.065a3.6 3.6 0 0 0-.108-.563 2 2 0 0 0-.078-.23V.453c-.073-.164-.168-.234-.352-.295a2 2 0 0 0-.16-.045 4 4 0 0 0-.57-.093c-.49-.044-1.19-.03-2.08.188-1.536.374-3.618 1.343-6.161 3.604l-2.4.238h-.006a2.55 2.55 0 0 0-1.524.734L.15 7.17a.512.512 0 0 0 .433.868l1.896-.271c.28-.04.592.013.955.132.232.076.437.16.655.248l.203.083c.196.816.66 1.58 1.275 2.195.613.614 1.376 1.08 2.191 1.277l.082.202c.089.218.173.424.249.657.118.363.172.676.132.956l-.271 1.9a.512.512 0 0 0 .867.433l2.382-2.386c.41-.41.668-.949.732-1.526zm.11-3.699c-.797.8-1.93.961-2.528.362-.598-.6-.436-1.733.361-2.532.798-.799 1.93-.96 2.528-.361s.437 1.732-.36 2.531Z" />
+          <path d="M5.205 10.787a7.6 7.6 0 0 0 1.804 1.352c-1.118 1.007-4.929 2.028-5.054 1.903-.126-.127.737-4.189 1.839-5.18.346.69.837 1.35 1.411 1.925" />
         </svg>
-        <input type="search" placeholder="Search" />
-      </div>
-      <ul className="flex flex-col">
-        <li>
-          <Link to="/dashboard" className="flex items-center gap-2 w-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 576 512"
-            >
-              <path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z" />
-            </svg>
-            Menu
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/dashboard/agency/posts"
-            className="flex items-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-stack"
-              viewBox="0 0 16 16"
-            >
-              <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z" />
-              <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z" />
-            </svg>
-            My posts
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/dashboard/agency/notifications"
-            className="flex items-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 448 512"
-            >
-              <path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
-            </svg>
-            Notifications
-          </Link>
-        </li>
-        <li>
-          <Link to="/dashboard/agency" className="flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 448 512"
-            >
-              <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
-            </svg>
-            My info
-          </Link>
-        </li>
-      </ul>
+        Правила
+      </button>
     </div>
   );
 };

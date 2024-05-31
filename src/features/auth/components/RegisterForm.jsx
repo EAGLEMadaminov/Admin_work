@@ -35,7 +35,7 @@ const formSchame = z.object({
     .min(8, { message: "Password must be least 8 characters" }),
   address: z.string().min(2, { message: "Address required" }),
   phone_number_2: z.string().min(13, { message: "Please enter correct phone" }),
-  licence_number: z.string().min(2, { message: "License number is required" }),
+  licencyNumber: z.string().min(2, { message: "License number is required" }),
 });
 
 const RegisterForm = () => {
@@ -156,6 +156,9 @@ const RegisterForm = () => {
     //   console.log(error);
     // }
   };
+  const onError = (errors) => {
+    console.error("Form submission errors:", errors);
+  };
 
   const handleCheckPhoneValueBtn = (value) => {
     setPhoneValue(value);
@@ -201,7 +204,7 @@ const RegisterForm = () => {
     <>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, onError)}
           className=" w-[400px] mx-auto"
         >
           {!state ? (
@@ -209,6 +212,7 @@ const RegisterForm = () => {
               <FormField
                 control={form.control}
                 name="name"
+                key="name"
                 className="active:border-none"
                 render={({ field }) => (
                   <FormItem className="w-full active:border-none relative border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
@@ -235,7 +239,7 @@ const RegisterForm = () => {
                         </span>
                         <Input
                           placeholder="Введите имя"
-                          className="placeholder-[#9BB8CF] focus-visible:ring-offset-0 focus-visible:ring-0  border-none active:border-none outline-none focus:outline-none focus:border-transparent"
+                          className="placeholder:text-[#9BB8CF] active:bg-transparent focus-visible:ring-offset-0 focus-visible:ring-0  border-none active:border-none outline-none focus:outline-none focus:border-transparent"
                           type="text"
                           {...field}
                         />
@@ -250,6 +254,7 @@ const RegisterForm = () => {
                 <FormField
                   control={form.control}
                   name="phone_number"
+                  key="phone_number"
                   render={({ field }) => (
                     <FormItem
                       className="w-full"
@@ -282,7 +287,7 @@ const RegisterForm = () => {
                             {...field}
                             mask="+998 -- --- -- --"
                             placeholder="+998"
-                            className="w-full p-2 px-3 rounded-lg outline-none"
+                            className="w-full p-2 px-3 rounded-lg placeholder:text-[#9BB8CF]  outline-none"
                             formatChars={formatChars}
                           />
                         </div>
@@ -315,6 +320,7 @@ const RegisterForm = () => {
               <FormField
                 control={form.control}
                 name="email"
+                key="email"
                 render={({ field }) => (
                   <FormItem className="border-none outline-none mt-3">
                     <FormLabel className="text-[#004280] text-[14px] font-[500]">
@@ -343,18 +349,18 @@ const RegisterForm = () => {
                           {...field}
                           type="email"
                           placeholder="Введите почту"
-                          className=" w-full border-none focus-visible:ring-offset-0 focus-visible:ring-0 p-2 px-3 rounded-lg outline-none"
+                          className=" w-full placeholder:text-[#9BB8CF] border-none focus-visible:ring-offset-0 focus-visible:ring-0 p-2 px-3 rounded-lg outline-none"
                           formatChars={formatChars}
                         />
                       </div>
                     </FormControl>
-                    {/* <FormMessage /> */}
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
                 name="password"
+                key="password"
                 render={({ field }) => (
                   <FormItem className="w-full mt-3">
                     <FormLabel className="text-[#004280] text-[14px] font-[500]">
@@ -381,7 +387,9 @@ const RegisterForm = () => {
                         <Input
                           placeholder="Введите пароль"
                           name="password"
-                          className="border-none focus-visible:ring-offset-0 focus-visible:ring-0 outline-none"
+                          key="password"
+                          id="password"
+                          className="border-none placeholder:text-[#9BB8CF] focus-visible:ring-offset-0 focus-visible:ring-0 outline-none"
                           type={showPassword ? "text" : "password"}
                           {...field}
                         />
@@ -426,6 +434,7 @@ const RegisterForm = () => {
               <FormField
                 control={form.control}
                 name="confirm_password"
+                key="confirm_password"
                 render={({ field }) => (
                   <FormItem className="w-full mt-3">
                     <FormLabel className="text-[#004280] text-[14px] font-[500]">
@@ -452,7 +461,7 @@ const RegisterForm = () => {
                         </span>
                         <Input
                           placeholder="Введите пароль"
-                          className="border-none focus-visible:ring-offset-0 focus-visible:ring-0 outline-none"
+                          className="border-none placeholder:text-[#9BB8CF] focus-visible:ring-offset-0 focus-visible:ring-0 outline-none"
                           value={password}
                           type={showConfirmPassword ? "text" : "password"}
                           {...field}
@@ -529,6 +538,7 @@ const RegisterForm = () => {
                     type="file"
                     className="opacity-0 absolute"
                     id="image"
+                    key="file"
                     onChange={handleImageChange}
                     placeholder="Выберите файл"
                     accept="image/png, image/jpg, image/jpeg, image/webp, image/heic"
@@ -564,6 +574,7 @@ const RegisterForm = () => {
               <FormField
                 constrol={form.control}
                 name="address"
+                key="address"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-[#004280] text-[14px] font-[500]">
@@ -580,12 +591,12 @@ const RegisterForm = () => {
                         <path
                           d="M7.00002 15.6998C7.00002 15.6998 12.6348 10.6911 12.6348 6.93459C12.6348 3.82258 10.112 1.2998 7.00002 1.2998C3.88801 1.2998 1.36523 3.82258 1.36523 6.93459C1.36523 10.6911 7.00002 15.6998 7.00002 15.6998Z"
                           stroke="#9BB8CF"
-                          stroke-width="1.2"
+                          strokeWidth="1.2"
                         />
                         <path
                           d="M8.80025 6.69992C8.80025 7.69403 7.99436 8.49992 7.00025 8.49992C6.00613 8.49992 5.20025 7.69403 5.20025 6.69992C5.20025 5.70581 6.00613 4.89992 7.00025 4.89992C7.99436 4.89992 8.80025 5.70581 8.80025 6.69992Z"
                           stroke="#9BB8CF"
-                          stroke-width="1.2"
+                          strokeWidth="1.2"
                         />
                       </svg>
 
@@ -608,7 +619,7 @@ const RegisterForm = () => {
                     center={
                       clickCurrent
                         ? selectedLocation
-                        : { lat: 40.9999338, lng: 71.2361407 }
+                        : { lat: 41.311081, lng: 69.240562 }
                     }
                     zoom={15}
                     onClick={handleMapClick}
@@ -627,7 +638,8 @@ const RegisterForm = () => {
 
               <FormField
                 constrol={form.control}
-                name="phone_number2"
+                name="phone_number_2"
+                key="phone_number2"
                 render={({ field }) => (
                   <FormItem
                     className="w-full mt-3"
@@ -672,7 +684,8 @@ const RegisterForm = () => {
               />
               <FormField
                 constrol={form.control}
-                name="licency_number"
+                name="licencyNumber"
+                key="licency"
                 render={({ field }) => (
                   <FormItem className="mt-3">
                     <label className="text-[#004280] text-[14px] font-[500]">

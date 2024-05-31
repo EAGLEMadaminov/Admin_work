@@ -23,8 +23,8 @@ const client_id = import.meta.env.VITE_CLIENT_ID;
 const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 
 const formSchema = z.object({
-  username: z.string().min(13, {
-    message: "Pleace enter your correct phone",
+  email: z.string().min(13, {
+    message: "Pleace enter correct email",
   }),
   password: z.string().min(6, {
     message: "Password must be least 6 charcter",
@@ -33,13 +33,14 @@ const formSchema = z.object({
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [changeBorder, setChangeBorder] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -47,10 +48,13 @@ const LoginForm = () => {
     "-": "[0-9]",
   };
   const onSubmit = async (data) => {
+    if (data.email === "" && data.password === "") {
+      setChangeBorder(true);
+      return;
+    }
     data.grant_type = grant_type;
     data.client_id = client_id;
     data.client_secret = client_secret;
-    data.username = data.username.replace(/\s/g, "");
     console.log(data);
 
     try {
@@ -67,6 +71,11 @@ const LoginForm = () => {
       console.log(error);
     }
   };
+  if (changeBorder) {
+    setTimeout(() => {
+      setChangeBorder(false);
+    }, 3000);
+  }
   return (
     <Form {...form}>
       <form
@@ -82,7 +91,9 @@ const LoginForm = () => {
                 Email
               </FormLabel>
               <FormControl>
-                <div className="flex items-center border rounded-lg px-3">
+                <div
+                  className={`flex items-center ${changeBorder ? "border-red-500" : ""} border  rounded-lg px-3`}
+                >
                   <span>
                     <svg
                       width="16"
@@ -94,16 +105,16 @@ const LoginForm = () => {
                       <path
                         d="M2.51563 2.0625L7.51973 5.65519C7.80867 5.86263 8.19133 5.86263 8.48027 5.65519L13.4844 2.0625M2.9375 11.25H13.0625C13.9945 11.25 14.75 10.4665 14.75 9.5V2.5C14.75 1.5335 13.9945 0.75 13.0625 0.75H2.9375C2.00552 0.75 1.25 1.5335 1.25 2.5V9.5C1.25 10.4665 2.00552 11.25 2.9375 11.25Z"
                         stroke="#9BB8CF"
-                        stroke-width="1.2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </span>
                   <Input
                     type="email"
                     {...field}
-                    className="border-none placeholder:text-[#9BB8CF] focus-visible:ring-0 focus-visible:ring-offset-0 "
+                    className="border-none  placeholder:text-[#9BB8CF] focus-visible:ring-0 focus-visible:ring-offset-0 "
                     placeholder="Введите почту"
                   />
                 </div>
@@ -121,7 +132,9 @@ const LoginForm = () => {
                 Пароль
               </FormLabel>
               <FormControl>
-                <div className="flex items-center px-3 border rounded-lg">
+                <div
+                  className={`flex items-center ${changeBorder ? "border-red-500" : ""} px-3 border rounded-lg`}
+                >
                   <span>
                     <svg
                       width="15"
@@ -133,8 +146,8 @@ const LoginForm = () => {
                       <path
                         d="M2.625 5.66667V5C2.625 2.78413 4.7994 1 7.5 1C10.2006 1 12.375 2.78413 12.375 5V5.66667M2.625 5.66667C1.73125 5.66667 1 6.26667 1 7V13.6667C1 14.4 1.73125 15 2.625 15H12.375C13.2688 15 14 14.4 14 13.6667V7C14 6.26667 13.2688 5.66667 12.375 5.66667M2.625 5.66667H12.375"
                         stroke="#9BB8CF"
-                        stroke-width="1.2"
-                        stroke-linecap="round"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
                       />
                     </svg>
                   </span>

@@ -13,6 +13,9 @@
   border: 1px solid #222;
   border-radius: 10px;
 }
+.no-arrow {
+  appearance: none;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

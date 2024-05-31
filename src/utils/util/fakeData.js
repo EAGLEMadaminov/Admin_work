@@ -2,6 +2,7 @@ import stars from "src/assets/stars.png";
 import location from "src/assets/location.svg";
 import home from "src/assets/home.svg";
 import wifi from "src/assets/wifi.svg";
+import Agency from "src/assets/agency.png";
 let posts = [
   {
     id: 1,
@@ -269,4 +270,72 @@ const countries = [
   "Zambia",
   "Zimbabwe",
 ];
-export { posts, countries };
+const agencies = [
+  {
+    id: 1,
+    name: "Mascan",
+    createdAt: "28.02.2024",
+    period: "21.03.2024",
+    flyCity: "Tashkent",
+    visitCity: "Анталья",
+    isActive: false,
+    siteLink: "mascantravel.uz",
+    image: Agency,
+  },
+  {
+    id: 2,
+    name: "Safiya",
+    createdAt: "28.02.2024",
+    period: "21.04.2024",
+    flyCity: "Tashkent",
+    visitCity: "Mecca",
+    isActive: true,
+    siteLink: "safiyaravel.uz",
+    image: Agency,
+  },
+  {
+    id: 3,
+    name: "Muslim",
+    createdAt: "28.02.2024",
+    period: "21.03.2024",
+    flyCity: "Tashkent",
+    visitCity: "Анталья",
+    isActive: true,
+    siteLink: "mascantravel.uz",
+    image: Agency,
+  },
+  {
+    id: 4,
+    name: "Mascan",
+    createdAt: "28.02.2024",
+    period: "21.03.2024",
+    flyCity: "Tashkent",
+    visitCity: "Анталья",
+    isActive: true,
+    siteLink: "mascantravel.uz",
+    image: Agency,
+  },
+  {
+    id: 5,
+    name: "Mascan",
+    createdAt: "28.02.2024",
+    period: "21.03.2024",
+    flyCity: "Tashkent",
+    visitCity: "Анталья",
+    isActive: true,
+    siteLink: "mascantravel.uz",
+    image: Agency,
+  },
+  {
+    id: 6,
+    name: "Mascan",
+    createdAt: "28.02.2024",
+    period: "21.03.2024",
+    flyCity: "Tashkent",
+    visitCity: "Анталья",
+    isActive: true,
+    siteLink: "mascantravel.uz",
+    image: Agency,
+  },
+];
+export { posts, countries, agencies };
