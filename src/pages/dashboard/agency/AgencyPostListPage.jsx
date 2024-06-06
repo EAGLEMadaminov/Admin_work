@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axiosIsntance from "src/utils/lib/axios";
-import CustomDropdown from "src/components/CustimDropdown";
-import { agencies } from "src/utils/util/fakeData";
-import MainTable from "src/components/MainTable";
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axiosIsntance from 'src/utils/lib/axios';
+import CustomDropdown from 'src/components/CustimDropdown';
+import { agencies } from 'src/utils/util/fakeData';
+import MainTable from 'src/components/MainTable';
 
 const AgebcyListPage = () => {
-  let token = localStorage.getItem("access_token");
+  let token = localStorage.getItem('access_token');
   const [packages, setPackages] = useState(agencies);
   const navigate = useNavigate();
 
   useEffect(() => {
     (async function getAgency() {
       try {
-        let { data } = await axiosIsntance.get("/admin/agency/me/", {
+        let { data } = await axiosIsntance.get('/admin/agency/me/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         if (data) {
           console.log(data);
-          navigate("/dashboard/agency");
+          navigate('/dashboard/agency');
         } else {
-          navigate("/auth/sign-up");
+          navigate('/auth/sign-up');
         }
       } catch (error) {
         console.log(error);
@@ -92,7 +92,10 @@ const AgebcyListPage = () => {
                 </button>
                 <p className="text-[#B3C6D9]">Выбрать</p>
               </div>
-              <button className="bg-[#004280] p-2 px-[15px] text-white rounded-[10px] text-[14px]">
+              <button
+                onClick={() => navigate('/dashboard/agency/posts/add')}
+                className="bg-[#004280] p-2 px-[15px] text-white rounded-[10px] text-[14px]"
+              >
                 Добавить объявление
               </button>
             </div>
@@ -114,7 +117,7 @@ const AgebcyListPage = () => {
         ) : (
           <div className="flex justify-center items-center h-[calc(100vh-200px)]">
             <button className="p-2 rounded-[10px] items-center bg-[#EDF2F6] text-text flex gap-[10px]">
-              Добавить объявление{" "}
+              Добавить объявление{' '}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"

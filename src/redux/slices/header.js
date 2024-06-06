@@ -1,9 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 const initialState = {};
 const headerSlice = createSlice({
-  name: "main",
+  name: 'main',
   initialState,
-  reducers: {},
+  reducers: {
+    
+  },
 });
 
 export const { checkOptions } = headerSlice.actions;

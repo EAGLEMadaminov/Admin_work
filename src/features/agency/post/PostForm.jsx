@@ -1,50 +1,51 @@
-import React, { useState, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import axiosIsntance from "src/utils/lib/axios";
-import { addDays, format } from "date-fns";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import axiosIsntance from 'src/utils/lib/axios';
+import { addDays, format } from 'date-fns';
+import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+import CustomCheckBox from 'src/components/CustomCheckBox';
 
 const PostForm = () => {
   const [countryList, setCountryList] = useState([]);
   const [showCountries, setShowCountries] = useState(false);
-  const [choosenCountry, setChoosenCountry] = useState("");
+  const [choosenCountry, setChoosenCountry] = useState('');
   const [cityList, setCityList] = useState([]);
   const [showCities, setShowCities] = useState(false);
-  const [choosenCity, setChoosenCity] = useState("");
-  const [cityFly, setCityFly] = useState("");
+  const [choosenCity, setChoosenCity] = useState('');
+  const [cityFly, setCityFly] = useState('');
   const [showCityFly, setShowCityFly] = useState(false);
   const [flyCityList, setFlyCityList] = useState([]);
   const [images, setImages] = useState([]);
   const [activities, setActivities] = useState([]);
   const [options, setOptions] = useState([]);
   const navigate = useNavigate();
-  // const city1Ref = useRef(null);
-  const city2Ref = useRef(null);
-  let token = localStorage.getItem("access_token");
+  const [showDate, setShowDate] = useState(false);
+  const [currency, setCurrency] = useState('yevro');
+  let token = localStorage.getItem('access_token');
   const [date, setDate] = useState({
     from: new Date(Date.now()),
     to: addDays(Date.now(), 4),
   });
   const { register, handleSubmit } = useForm();
   const [array, setArray] = useState([
-    { id: 1, src: "", islast: false },
-    { id: 2, src: "", islast: false },
-    { id: 3, src: "", islast: false },
-    { id: 4, src: "", islast: false },
-    { id: 5, src: "", islast: false },
-    { id: 6, src: "", islast: false },
-    { id: 7, src: "", islast: false },
-    { id: 8, src: "", islast: false },
+    { id: 1, src: '', islast: false },
+    { id: 2, src: '', islast: false },
+    { id: 3, src: '', islast: false },
+    { id: 4, src: '', islast: false },
+    { id: 5, src: '', islast: false },
+    { id: 6, src: '', islast: false },
+    { id: 7, src: '', islast: false },
+    { id: 8, src: '', islast: false },
   ]);
 
   const handleImageChange = async (e, id) => {
     const file = e.target.files[0];
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
     try {
       let { data: imageId } = await axiosIsntance.post(
-        "/image-upload/",
+        '/image-upload/',
         formData,
         {
           headers: {
@@ -116,6 +117,7 @@ const PostForm = () => {
   };
 
   const handleDatePicker = (e) => {
+    setShowDate(true);
     setDate({ from: new Date(e[0]), to: new Date(e[1]) });
   };
 
@@ -124,8 +126,8 @@ const PostForm = () => {
     hotel.name = data.hotel_name;
     hotel.stars = data.hotel_stars;
     hotel.link = data.hotel_link;
-    data.starting_date = format(date.from, "yyyy-MM-dd");
-    data.ending_date = format(date.to, "yyyy-MM-dd");
+    data.starting_date = format(date.from, 'yyyy-MM-dd');
+    data.ending_date = format(date.to, 'yyyy-MM-dd');
     data.images = images;
     data.city_to = choosenCity.id;
     data.city_from = cityFly.id;
@@ -138,7 +140,7 @@ const PostForm = () => {
     console.log(data);
     try {
       let { data: hotelId } = await axiosIsntance.post(
-        "/admin/agency/hotels/create/",
+        '/admin/agency/hotels/create/',
         hotel,
         {
           headers: {
@@ -155,7 +157,7 @@ const PostForm = () => {
     console.log(data);
     try {
       let { data: agency } = await axiosIsntance.post(
-        "/admin/agency/packages/create/",
+        '/admin/agency/packages/create/',
         data,
         {
           headers: {
@@ -164,138 +166,138 @@ const PostForm = () => {
         }
       );
       if (agency) {
-        navigate("/dashboard/agency/posts");
+        navigate('/dashboard/agency/posts');
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleCheckboxChange = (e) => {
+    console.log(e.target.checked);
+  };
   return (
     <>
       <form
-        className="space-y-8 w-[800px] mx-auto mt-5"
+        className="space-y-8 w-[600px] mx-auto mt-5"
         onSubmit={handleSubmit(handleFormSubmit)}
       >
-        <div className="flex justify-between">
-          <h2 className="text-[30px] text-[#101828] leading-[38px]">
-            Post yaratish
-          </h2>
-          <button
-            type="submit"
-            className=" bg-[#7F56D9] rounded-lg px-3 text-white"
-          >
-            Yaratish
-          </button>
-        </div>
         <div className="ml-5">
-          <h4 className="text-[24px] font-[600] mb-3 text-[#101828]">
-            Tour packet ma&apos;lumotlari
+          <h4 className="text-[18px] font-[600] mb-3 text-text">
+            Детальная информация
           </h4>
-          <label
-            htmlFor="tour_name"
-            className="font-[400] text-[18px] text-[#0F2E33]"
-          >
-            Nomi
-          </label>
+          <div className="flex justify-between">
+            <label
+              htmlFor="tour_name"
+              className="text-[14px] font-[500] text-text"
+            >
+              Укажите название пакета<span className="text-[#fa0000]">*</span>
+            </label>
+            <span className="text-[14px] font-[500] text-[#0042804D]">
+              0/45
+            </span>
+          </div>
           <input
             id="tour_name"
-            placeholder="New york trip"
-            {...register("title", { required: true })}
+            placeholder="Введите название"
+            {...register('title', { required: true })}
             required
-            className="border w-full p-2 mt-1 mb-5 rounded-lg border-[#000]"
+            className="border bg-[#EDF2F6] placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
           />
 
-          <div className="relative">
-            <label
-              htmlFor="country"
-              className="font-[400] text-[18px] text-[#0F2E33]"
-            >
-              Davlat
-            </label>
-            <input
-              type="search"
-              id="country"
-              placeholder="Davlat nomini kiriting"
-              {...register("country", { required: true })}
-              className="border w-full p-2 mt-1 mb-5 rounded-lg border-[#000]"
-              value={choosenCountry}
-              required
-              onChange={handleSearchCountryBtn}
-            />
+          <div className="flex justify-between gap-[20px]">
+            <div className="relative w-full">
+              <label
+                htmlFor="country"
+                className="font-[500] text-[14px] text-text"
+              >
+                Страна<span className="text-[#fa0000]">*</span>
+              </label>
+              <input
+                type="search"
+                id="country"
+                placeholder="Выберите страну"
+                {...register('country', { required: true })}
+                className="border bg-[#EDF2F6] placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
+                value={choosenCountry}
+                required
+                onChange={handleSearchCountryBtn}
+              />
 
-            {countryList.length > 0 && showCountries ? (
-              <ul className="border z-20 bg-white absolute p-2 w-full rounded-lg shadow-2xl top-[70px] border-[#000]">
-                {countryList.map((item, index) => {
-                  return (
-                    <li
-                      onClick={() => {
-                        setChoosenCountry(item);
-                        setShowCountries(false);
-                      }}
-                      key={index}
-                    >
-                      {item}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="relative">
-            <label
-              htmlFor="city"
-              className="font-[400] text-[18px] text-[#0F2E33]"
-            >
-              Shahar
-            </label>
-            <input
-              type="search"
-              id="city"
-              {...register("city_to", { required: true })}
-              // ref={city1Ref}
-              className="border border-[#000] w-full p-2  mt-1 mb-5 rounded-lg"
-              placeholder="Borish shahrini kiriting"
-              onChange={handleChooseCity}
-              value={choosenCity.name}
-            />
+              {countryList.length > 0 && showCountries ? (
+                <ul className="border z-20 bg-white absolute p-2 w-full rounded-lg shadow-2xl top-[70px] border-[#000]">
+                  {countryList.map((item, index) => {
+                    return (
+                      <li
+                        onClick={() => {
+                          setChoosenCountry(item);
+                          setShowCountries(false);
+                        }}
+                        key={index}
+                      >
+                        {item}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                ''
+              )}
+            </div>
+            <div className="relative w-full">
+              <label
+                htmlFor="city"
+                className="font-[500] text-[14px] text-text"
+              >
+                Город<span className="text-[#fa0000]">*</span>
+              </label>
+              <input
+                type="search"
+                id="city"
+                {...register('city_to', { required: true })}
+                // ref={city1Ref}
+                className="border bg-[#EDF2F6]  placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
+                placeholder="Выберите город"
+                onChange={handleChooseCity}
+                value={choosenCity.name}
+              />
 
-            {cityList.length > 0 && showCities ? (
-              <ul className="absolute  z-20 shadow-2xl border border-[#000] w-full p-2 rounded-lg top-[70px] bg-white">
-                {cityList.map((city, index) => {
-                  return (
-                    <li
-                      key={index}
-                      onClick={() => {
-                        setChoosenCity(city);
-                        setShowCities(false);
-                        // city2Ref.current.focus();
-                      }}
-                    >
-                      {city.name}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              ""
-            )}
+              {cityList.length > 0 && showCities ? (
+                <ul className="absolute  z-20 shadow-2xl border border-[#000] w-full p-2 rounded-lg top-[70px] bg-white">
+                  {cityList.map((city, index) => {
+                    return (
+                      <li
+                        key={index}
+                        onClick={() => {
+                          setChoosenCity(city);
+                          setShowCities(false);
+                          // city2Ref.current.focus();
+                        }}
+                      >
+                        {city.name}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                ''
+              )}
+            </div>
           </div>
+
           <div className="relative">
             <label
               htmlFor="fly_city"
-              className="font-[400] text-[18px] text-[#0F2E33]"
+              className="font-[500] text-[14px] text-text"
             >
-              Uchish shahri
+              Город отъезда<span className="text-[#fa0000]">*</span>
             </label>
             <input
               id="fly_city"
-              className="border border-[#000] w-full p-2 mt-1 mb-5 rounded-lg"
-              placeholder="Uchish shahrini kiriting"
+              className="border bg-[#EDF2F6] placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
+              placeholder="Выберите город"
               // ref={city2Ref}
-              {...register("city_from", { required: true })}
+              {...register('city_from', { required: true })}
               onChange={handleFlyCityBtn}
               value={cityFly.name}
             />
@@ -317,168 +319,325 @@ const PostForm = () => {
                 })}
               </ul>
             ) : (
-              ""
+              ''
             )}
           </div>
-          <h2 className="text-[24px] font-[600]">Sayohat vaqtini kiriting</h2>
+          <h2 className="text-[14px] font-[500] text-text">
+            Укажите дату поездки<span className="text-[#fa0000]">*</span>
+          </h2>
           <div className="relative  mt-3 mb-3">
-            <div className="flex gap-14 ">
-              <p>Jo&apos;nash sanasi</p>
-              <p className="ml-2">Qaytish sanasi</p>
+            <div className="flex gap-14 text-[14px] font-[500] text-[#B3C6D9]">
+              <p>Дата вылета</p>
+              <p className="ml-[175px]">Дата пребывания</p>
             </div>
-            <div className="flex gap-2 mt-4">
-              <p className="flex items-center gap-2 ml-2">
-                {format(date.from, "dd LLLL, yyyy")}
+            <div className="flex gap-5 mt-4">
+              <div className="flex w-full items-center gap-5 px-3 border border-[#D1DCE5] rounded-lg p-2 bg-[#EDF2F6]">
+                {showDate ? (
+                  <p>
+                    <span className="tracking-[2px]">
+                      {format(date.from, `dd | LLLL | yyyy`)}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="flex gap-[15px] text-[#0042804D] text-[14px] font-[500]">
+                    День <span className="ml-2">|</span> Месяц{' '}
+                    <span className="ml-2">|</span> Год
+                  </p>
+                )}
+
                 <svg
+                  width="19"
+                  height="21"
+                  viewBox="0 0 19 21"
+                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-calendar4"
-                  viewBox="0 0 16 16"
+                  className="ml-3"
                 >
-                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z" />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M3.73512 0C4.14933 0 4.48512 0.335786 4.48512 0.75V1.63928H13.8125V0.75C13.8125 0.335786 14.1483 0 14.5625 0C14.9767 0 15.3125 0.335786 15.3125 0.75V1.68118C17.1167 1.95258 18.5 3.50939 18.5 5.38928L18.5 16.875C18.5 18.9461 16.8211 20.625 14.75 20.625H3.75C1.67893 20.625 0 18.9461 0 16.875V5.38928C0 3.58032 1.28086 2.07052 2.98512 1.71734V0.75C2.98512 0.335786 3.32091 0 3.73512 0ZM3.7251 3.13941C2.49393 3.15276 1.5 4.15495 1.5 5.38928V16.875C1.5 18.1176 2.50736 19.125 3.75 19.125H14.75C15.9926 19.125 17 18.1176 17 16.875L17 5.38928C17 4.14664 15.9926 3.13928 14.75 3.13928H3.75264C3.74681 3.13941 3.74097 3.13948 3.73512 3.13948C3.73177 3.13948 3.72843 3.13946 3.7251 3.13941ZM3.64286 6.21426C3.64286 5.80004 3.97864 5.46426 4.39286 5.46426H14.0312C14.4455 5.46426 14.7812 5.80004 14.7812 6.21426C14.7812 6.62847 14.4455 6.96426 14.0312 6.96426H4.39286C3.97864 6.96426 3.64286 6.62847 3.64286 6.21426Z"
+                    fill="#004280"
+                  />
                 </svg>
-              </p>
+              </div>
               <DateRangePicker
                 className="absolute w-full h-[100%]  opacity-0 "
                 onChange={handleDatePicker}
               />
-              <p className="flex items-center gap-2">
-                {format(date.to, "dd LLLL, yyyy")}
+              <div className="flex w-full items-center gap-5 px-3 ml-2 border border-[#D1DCE5] rounded-lg p-2 bg-[#EDF2F6]">
+                {showDate ? (
+                  <p>
+                    <span className="tracking-[2px]">
+                      {format(date.to, `dd | LLLL | yyyy`)}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="flex gap-[15px] text-[#0042804D] text-[14px] font-[500]">
+                    День <span className="ml-2">|</span> Месяц{' '}
+                    <span className="ml-2">|</span> Год
+                  </p>
+                )}
+
                 <svg
+                  width="19"
+                  height="21"
+                  viewBox="0 0 19 21"
+                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-calendar4"
-                  viewBox="0 0 16 16"
+                  className="ml-3"
                 >
-                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z" />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M3.73512 0C4.14933 0 4.48512 0.335786 4.48512 0.75V1.63928H13.8125V0.75C13.8125 0.335786 14.1483 0 14.5625 0C14.9767 0 15.3125 0.335786 15.3125 0.75V1.68118C17.1167 1.95258 18.5 3.50939 18.5 5.38928L18.5 16.875C18.5 18.9461 16.8211 20.625 14.75 20.625H3.75C1.67893 20.625 0 18.9461 0 16.875V5.38928C0 3.58032 1.28086 2.07052 2.98512 1.71734V0.75C2.98512 0.335786 3.32091 0 3.73512 0ZM3.7251 3.13941C2.49393 3.15276 1.5 4.15495 1.5 5.38928V16.875C1.5 18.1176 2.50736 19.125 3.75 19.125H14.75C15.9926 19.125 17 18.1176 17 16.875L17 5.38928C17 4.14664 15.9926 3.13928 14.75 3.13928H3.75264C3.74681 3.13941 3.74097 3.13948 3.73512 3.13948C3.73177 3.13948 3.72843 3.13946 3.7251 3.13941ZM3.64286 6.21426C3.64286 5.80004 3.97864 5.46426 4.39286 5.46426H14.0312C14.4455 5.46426 14.7812 5.80004 14.7812 6.21426C14.7812 6.62847 14.4455 6.96426 14.0312 6.96426H4.39286C3.97864 6.96426 3.64286 6.62847 3.64286 6.21426Z"
+                    fill="#004280"
+                  />
                 </svg>
-              </p>
+              </div>
             </div>
           </div>
 
-          <div className="mt-5 mb-5">
-            <label
-              htmlFor="tour_price"
-              className="font-[400] text-[#0F2E33] text-[18px] "
-            >
-              Sayohat narxi 1 kishi uchun
-            </label>
-            <div className="mt-3">
+          <div className="mt-5 mb-5 flex justify-between ">
+            <div className="flex w-[60%] flex-col">
+              <label
+                htmlFor="tour_price"
+                className="font-[500] text-[14px] text-text"
+              >
+                Цена<span className="text-[#fa0000]">*</span>
+              </label>
               <input
                 placeholder="1,600,000"
-                className="outline-none w-[50%] border border-[#000] p-2 rounded-lg"
+                className="outline-none  mt-3 bg-[#EDF2F6]  w-full border border-[#D1DCE5] p-2 rounded-lg"
                 type="number"
-                {...register("price", { required: true })}
+                {...register('price', { required: true })}
                 id="tour_price"
               />
-              {/* <select {...register("price_for")}>
-                <option value="sum">sum</option>
-                <option value="euro">euro</option>
-                <option value="dollar">dollar</option>
-              </select> */}
+            </div>
+            <div>
+              <h2 className="font-[500] text-[14px] text-text mb-3">Валюта</h2>
+              <button
+                onClick={() => setCurrency('sum')}
+                type="button"
+                className={`py-3 w-[80px] px-[10px] ${currency === 'sum' ? 'bg-text text-white' : 'bg-[#EDF2F6] text-[#0042804D]'}  rounded-lg  text-[14px] font-[500]`}
+              >
+                Сум
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency('yevro')}
+                className={`py-3 w-[80px] ml-3 px-[10px] ${currency === 'yevro' ? 'bg-text text-white' : 'bg-[#EDF2F6] text-[#0042804D]'} rounded-lg text-[14px] font-[500]`}
+              >
+                Y.e
+              </button>
             </div>
           </div>
 
-          <label
-            htmlFor="hotel"
-            className="font-[400] text-[#0F2E33] text-[18px]"
-          >
-            Mehmonxona
-          </label>
-          <div className="flex gap-4">
+          <div className="flex gap-[60px]  items-end justify-between">
+            <div className=" w-full">
+              <label
+                htmlFor="hotel"
+                className="font-[500] text-[14px] text-text"
+              >
+                Отель<span className="text-[#fa0000]">*</span>
+              </label>
+
+              <input
+                id="hotel"
+                placeholder="Название отеля"
+                {...register('hotel_name')}
+                className="outline-none mt-3 text-[#0042804D] bg-[#EDF2F6]  w-full border border-[#D1DCE5] p-2 py-3 rounded-lg"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="stars"
+                className="font-[500] text-[14px] text-text"
+              >
+                Сколько звезд<span className="text-[#fa0000]">*</span>
+              </label>
+              <div className="relative items-center  mt-3 bg-[#EDF2F6] py-3 border-[#D1DCE5] px-[10px] border rounded-lg">
+                <select
+                  name="starts"
+                  id="stars"
+                  {...register('hotel_stars')}
+                  className="text-[14px] w-[170px] bg-transparent font-[500] text-[#0042804D] outline-none  appearance-none "
+                >
+                  <option value="5" className="options">
+                    5 звезд
+                  </option>
+                  <option value="4" className="options">
+                    4 звезд
+                  </option>
+                  <option value="3" className="options">
+                    3 звезд
+                  </option>
+                  <option value="2" className="options">
+                    2 звезд
+                  </option>
+                  <option value="1" className="options">
+                    1 звезд
+                  </option>
+                </select>
+                <span className="absolute right-2 font-[700] top-5 text-text">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    fill="currentColor"
+                    className="bi bi-chevron-down"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <label
+              htmlFor="hotel_link"
+              className="font-[500] text-[14px] text-text"
+            >
+              Ссылка на отель
+            </label>
             <input
-              id="hotel"
-              placeholder="Hilton, Tashkent, Uzbekistan"
-              {...register("hotel_name")}
-              className="w-full border border-[#000] p-2 mt-3 rounded-lg"
-            />
-            <input
-              id="hotel"
-              placeholder="Ko'rish uchun link"
-              {...register("hotel_link")}
-              className="w-full border border-[#000] p-2 mt-3 rounded-lg"
+              type="url"
+              name=""
+              id="hotel_link"
+              placeholder="Ссылка"
+              className="w-full  mt-3 outline-none py-3 p-2 rounded-lg bg-[#EDF2F6] border border-[#D1DCE5]"
             />
           </div>
-          <div className="flex items-center mt-5 gap-1">
-            <label htmlFor="stars">Mehmonxona yulduzli</label>
-            <select
-              name="starts"
-              id="stars"
-              {...register("hotel_stars")}
-              className="appearance-none w-[30px] text-center border-[#222] border rounded-lg"
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="currentColor"
-              className="bi bi-star-fill text-yellow-400"
-              viewBox="0 0 16 16"
-            >
-              <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-            </svg>
-          </div>
-          <h3 className="text-[18px] font-semibold my-3">
-            Qo&apos;shimcha afzalliklar
+          <input type="url" placeholder="" />
+          <h3 className="text-[18px] text-text font-semibold my-3">
+            Включает в себя
           </h3>
-          <div className="flex gap-3 items-center">
-            <label htmlFor="umra">Umra</label>
-            <input
-              id="umra"
-              type="checkbox"
-              className="w-4 h-4"
-              onChange={(e) => {
-                e.target.checked ? setActivities([...activities, 1]) : "";
-              }}
+          <div className="flex flex-col gap-3">
+            <CustomCheckBox
+              id="git"
+              label="Гид"
+              onCheckboxChange={handleCheckboxChange}
             />
-            <label htmlFor="nature">Tabiat</label>
-            <input
-              className="w-4 h-4"
-              type="checkbox"
-              id="nature"
-              onChange={(e) => {
-                e.target.checked ? setActivities([...activities, 2]) : "";
-              }}
+            <CustomCheckBox
+              id="ticket"
+              label="Авиабилеты"
+              onCheckboxChange={handleCheckboxChange}
             />
-            <label htmlFor="ocean">Dengiz</label>
-            <input
-              className="w-4 h-4"
-              type="checkbox"
-              id="ocean"
-              onChange={(e) => {
-                e.target.checked ? setActivities([...activities, 3]) : "";
-              }}
-            />
-            <label htmlFor="museum">Muzeyga sayohat</label>
-            <input
-              className="w-4 h-4"
-              type="checkbox"
-              id="museum"
-              onChange={(e) => {
-                e.target.checked ? setActivities([...activities, 4]) : "";
-              }}
+            <CustomCheckBox
+              id="insurance"
+              label="Страховка"
+              onCheckboxChange={handleCheckboxChange}
             />
           </div>
-          <h2 className="text-[24px] text-[#101828] font-[600] mt-5">
-            Rasmlar
-          </h2>
-          <p className="mt-3 mb-1">Birinchi rasm sarlavhaga qo&apos;yiladi</p>
+          <h3 className="text-[18px] text-text font-semibold my-3">
+            Доступные планы питания
+          </h3>
+          <div className="flex flex-col gap-3">
+            <CustomCheckBox
+              id="all"
+              label="Все включено"
+              onCheckboxChange={handleCheckboxChange}
+            />
+            <CustomCheckBox
+              id="breakfast"
+              label="Завтрак включен в стоимость проживания"
+              onCheckboxChange={handleCheckboxChange}
+            />
+            <CustomCheckBox
+              id="insurance"
+              label="Обед включен в стоимость проживания"
+              onCheckboxChange={handleCheckboxChange}
+            />
+            <CustomCheckBox
+              id="insurance"
+              label="Ужин включен в стоимость проживания"
+              onCheckboxChange={handleCheckboxChange}
+            />
+          </div>
+          <h3 className="text-[18px] text-text font-semibold my-3">Удобства</h3>
+          <div className="flex justify-between">
+            <div className="flex flex-col gap-3">
+              <CustomCheckBox
+                id="swim"
+                label="Бассейн"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="sofa"
+                label="Спа"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="sea"
+                label="Вид на океан"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="enjoy"
+                label="Гидромассажная ванна"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="pets"
+                label="Возможно размещение с домашними животными"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="conditsaner"
+                label="Кондиционер"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="train"
+                label="Тренажерный зал"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="trasnfer"
+                label="Трансфер от /до аэропорта включен в стоимость"
+                onCheckboxChange={handleCheckboxChange}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <CustomCheckBox
+                id="all"
+                label="Все включено"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="breakfast"
+                label="Завтрак включен в стоимость проживания"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="insurance"
+                label="Обед включен в стоимость проживания"
+                onCheckboxChange={handleCheckboxChange}
+              />
+              <CustomCheckBox
+                id="insurance"
+                label="Ужин включен в стоимость проживания"
+                onCheckboxChange={handleCheckboxChange}
+              />
+            </div>
+          </div>
+          <div className="flex justify-between items-center my-5">
+            <h2 className="text-[18px] text-text font-[600]">Фото</h2>
+            <p className="text-[14px] font-[500] text-text">
+              Первое фото будет на обложке объявления
+            </p>
+          </div>
           <div className="flex flex-wrap gap-2">
             {array.map((item) => {
               return (
                 <div
                   className={`w-[180px] h-[150px] gap-3 flex item-center mx-auto justify-center flex-col text-center ${
-                    item.id == 1 && !item.src ? "bg-[#F9E3C2]" : "bg-[#F2F4F5]"
+                    item.id == 1 && !item.src ? 'bg-[#F9E3C2]' : 'bg-[#F2F4F5]'
                   }`}
                   key={item.id}
                 >
@@ -512,77 +671,7 @@ const PostForm = () => {
               );
             })}
           </div>
-          <h1>O&apos;z ichiga oladi</h1>
-          <div className="flex gap-3">
-            <div className="flex items-center gap-2">
-              <input
-                id="bilet"
-                type="checkbox"
-                onChange={(e) =>
-                  e.target.checked ? setOptions([...options, 1]) : ""
-                }
-                className="w-4 h-4"
-              />
-              <label htmlFor="bilet">Avia bilet</label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id="mashina"
-                type="checkbox"
-                className=" w-4 h-4"
-                onChange={(e) =>
-                  e.target.checked ? setOptions([...options, 2]) : ""
-                }
-              />
-              <label htmlFor="mashina">Transport</label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id="insurance"
-                type="checkbox"
-                className=" w-4 h-4"
-                onChange={(e) =>
-                  e.target.checked ? setOptions([...options, 3]) : ""
-                }
-              />
-              <label htmlFor="insurance">Tibbiy sug&apos;urta</label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id="viza"
-                type="checkbox"
-                className="w-4 h-4"
-                onChange={(e) =>
-                  e.target.checked ? setOptions([...options, 4]) : ""
-                }
-              />
-              <label htmlFor="viza">Rasmiy viza</label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id="meal"
-                type="checkbox"
-                className=" w-4 h-4"
-                onChange={(e) =>
-                  e.target.checked ? setOptions([...options, 5]) : ""
-                }
-              />
-              <label htmlFor="meal">Taom (2-3) mahal</label>
-            </div>
-          </div>
-          <div className="mt-3">
-            <label htmlFor="comment">Qo&apos;shimcha ma&apos;lumot</label>
-            <textarea
-              id="comment"
-              placeholder="Qo'shumcha ma'lumot kiriting"
-              className="border mt-1 border-[#222] w-full p-2 rounded-lg bg-[#F3F4F5] active:bg-white"
-              cols="30"
-              {...register("comment")}
-              rows="3"
-            ></textarea>
-          </div>
         </div>
-        <Link className="block text-right text-[#7F56D9]">Forgot password</Link>
       </form>
     </>
   );

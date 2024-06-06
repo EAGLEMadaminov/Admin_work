@@ -16,6 +16,9 @@
 .no-arrow {
   appearance: none;
 }
+.options {
+  padding: 10px;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
