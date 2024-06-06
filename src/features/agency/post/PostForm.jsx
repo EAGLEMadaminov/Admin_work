@@ -5,6 +5,7 @@ import axiosIsntance from 'src/utils/lib/axios';
 import { addDays, format } from 'date-fns';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import CustomCheckBox from 'src/components/CustomCheckBox';
+import { Facilities } from 'src/utils/util/fakeData';
 
 const PostForm = () => {
   const [countryList, setCountryList] = useState([]);
@@ -28,7 +29,13 @@ const PostForm = () => {
     from: new Date(Date.now()),
     to: addDays(Date.now(), 4),
   });
-  const { register, handleSubmit, control } = useForm();
+  const { register, handleSubmit, setValue, getValues, control } = useForm({
+    defaultValues: {
+      breakfast: false,
+      dinner: false,
+      night_dinner: false,
+    },
+  });
   const [array, setArray] = useState([
     { id: 1, src: '', islast: false },
     { id: 2, src: '', islast: false },
@@ -176,6 +183,14 @@ const PostForm = () => {
 
   const handleCheckboxChange = (e) => {
     setSelectAllMeals(e.target.checked);
+  };
+  const toggleCheckboxes = () => {
+    setSelectAllMeals(!selectAllMeals);
+    const currentValues = getValues();
+    const newValue = !currentValues.breakfast; // Assuming all checkboxes should have the same value
+    setValue('breakfast', newValue);
+    setValue('dinner', newValue);
+    setValue('night_dinner', newValue);
   };
   return (
     <>
@@ -562,7 +577,7 @@ const PostForm = () => {
           <div className="flex flex-col gap-3">
             <button
               type="button"
-              onClick={() => setSelectAllMeals(!selectAllMeals)}
+              onClick={toggleCheckboxes}
               className="flex items-center gap-3 ml-2 "
             >
               {selectAllMeals ? (
@@ -608,7 +623,6 @@ const PostForm = () => {
             <Controller
               name="breakfast"
               control={control}
-              defaultValue={false}
               render={({ field }) => (
                 <CustomCheckBox
                   checked={field.value}
@@ -620,7 +634,6 @@ const PostForm = () => {
             <Controller
               name="dinner"
               control={control}
-              defaultValue={false}
               render={({ field }) => (
                 <CustomCheckBox
                   checked={field.value}
@@ -632,7 +645,6 @@ const PostForm = () => {
             <Controller
               name="night_dinner"
               control={control}
-              defaultValue={false}
               render={({ field }) => (
                 <CustomCheckBox
                   checked={field.value}
@@ -643,82 +655,24 @@ const PostForm = () => {
             />
           </div>
           <h3 className="text-[18px] text-text font-semibold my-3">Удобства</h3>
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-3">
-              <CustomCheckBox
-                id="swim"
-                label="Бассейн"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="sofa"
-                label="Спа"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="sea"
-                label="Вид на океан"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="enjoy"
-                label="Гидромассажная ванна"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="pets"
-                label="Возможно размещение с домашними животными"
-                onCheckboxChange={handleCheckboxChange}
-              />
-
-              <CustomCheckBox
-                id="train"
-                label="Тренажерный зал"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="trasnfer"
-                label="Трансфер от /до аэропорта включен в стоимость"
-                onCheckboxChange={handleCheckboxChange}
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <CustomCheckBox
-                id="park"
-                label="Аквапарк"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="wifi"
-                label="Wi-Fi включен"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="conditsaner"
-                label="Кондиционер"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="washmachine"
-                label="Стиральная машина и сушилка"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="avtopark"
-                label="Парковка"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="way"
-                label="Открытая площадка"
-                onCheckboxChange={handleCheckboxChange}
-              />
-              <CustomCheckBox
-                id="hotel"
-                label="Ресторан"
-                onCheckboxChange={handleCheckboxChange}
-              />
-            </div>
+          <div className="flex justify-between flex-wrap">
+            {Facilities.map((item) => {
+              return (
+                <div className="w-1/2 my-2" key={item.id}>
+                  <Controller
+                    name={item.label}
+                    control={control}
+                    render={({ field }) => (
+                      <CustomCheckBox
+                        checked={field.value}
+                        onChange={field.onChange}
+                        label={item.text}
+                      />
+                    )}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           <div className="lg:w-[850px]">

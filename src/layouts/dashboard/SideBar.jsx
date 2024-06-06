@@ -1,17 +1,33 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Voice from "../../assets/icons/voice.png";
-import List from "../../assets/icons/list.png";
-import Chart from "../../assets/icons/chart.png";
-import Help from "../../assets/icons/help.png";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Voice from '../../assets/icons/voice.png';
+import List from '../../assets/icons/list.png';
+import Chart from '../../assets/icons/chart.png';
+import Help from '../../assets/icons/help.png';
+import { usePathName } from 'src/router/hooks';
 
 const SideBar = () => {
+  const [activePage, setActivePage] = useState(1);
+  const pathname = usePathName();
+
+  useEffect(() => {
+    if (pathname.includes('posts')) {
+      setActivePage(2);
+    } else if (pathname.includes('statistics')) {
+      setActivePage(3);
+    } else if (pathname.includes('help')) {
+      setActivePage(4);
+    } else {
+      setActivePage(1);
+    }
+  }, [pathname]);
+
   return (
     <div className="py-7 pl-7 pr-4 w-[250px]  bg-[#00428008] flex flex-col justify-between h-[100vh] fixed">
       <div>
         <div className="w-[180px]">
           <h3 className="text-text font-[400] text-[30px]">
-            Tour <span className="text-[#FF9B06]">Agency</span>{" "}
+            Tour <span className="text-[#FF9B06]">Agency</span>{' '}
           </h3>
           <p className="text-[#1B2126] text-[12px]">
             Все туры в одном месте – открой мир с нами!
@@ -22,7 +38,7 @@ const SideBar = () => {
           <li>
             <Link
               to="/dashboard"
-              className="flex items-center  bg-[#0042800F] p-3 rounded-lg gap-2 w-full text-text"
+              className={`flex items-center hover:bg-[#0042800F] ${activePage == 1 ? 'bg-[#0042800F]' : ''}  p-3 rounded-lg gap-2 w-full text-text`}
             >
               <img
                 src={Voice}
@@ -35,7 +51,7 @@ const SideBar = () => {
           <li>
             <Link
               to="/dashboard/agency/posts"
-              className="flex items-center hover:bg-[#0042800F] p-3 rounded-lg gap-2 text-text"
+              className={`flex items-center hover:bg-[#0042800F] ${activePage === 2 ? 'bg-[#0042800F]' : ''} p-3 rounded-lg gap-2 text-text`}
             >
               <img
                 src={List}
@@ -47,8 +63,8 @@ const SideBar = () => {
           </li>
           <li>
             <Link
-              to="/dashboard/agency/notifications"
-              className="flex items-center hover:bg-[#0042800F] gap-2 p-3 rounded-lg text-text"
+              to="/dashboard/agency/statistics"
+              className={`flex items-center hover:bg-[#0042800F] ${activePage == 3 ? 'bg-[#0042800F]' : ''} gap-2 p-3 rounded-lg text-text`}
             >
               <img
                 src={Chart}
@@ -60,8 +76,8 @@ const SideBar = () => {
           </li>
           <li>
             <Link
-              to="/dashboard/agency"
-              className="flex items-center hover:bg-[#0042800F] p-3 rounded-lg  gap-2 text-text"
+              to="/dashboard/agency/help"
+              className={`flex items-center hover:bg-[#0042800F] ${activePage == 4 ? 'bg-[#0042800F]' : ''} p-3 rounded-lg  gap-2 text-text`}
             >
               <img
                 src={Help}

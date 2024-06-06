@@ -1,5 +1,5 @@
-import { Suspense } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Suspense } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 import {
   AgencyListPage,
   AddPostPage,
@@ -9,11 +9,13 @@ import {
   NotificationPage,
   EditInfoPage,
   MainPage,
-} from "../../pages/dashboard/index.js";
-import DashboardLayout from "../../layouts/dashboard/DashboardLayout";
+  StatistcsPage,
+  HelpPage,
+} from '../../pages/dashboard/index.js';
+import DashboardLayout from '../../layouts/dashboard/DashboardLayout';
 
 const dashboarRoutes = {
-  path: "dashboard",
+  path: 'dashboard',
   element: (
     <DashboardLayout>
       <Suspense fallback={<>Loading...</>}>
@@ -24,7 +26,7 @@ const dashboarRoutes = {
   ),
   children: [
     {
-      path: "agency",
+      path: 'agency',
 
       children: [
         {
@@ -32,42 +34,50 @@ const dashboarRoutes = {
           element: <AgencyInfoPage />,
         },
         {
-          path: "posts",
+          path: 'help',
+          element: <HelpPage />,
+        },
+        {
+          path: 'posts',
           children: [
             {
               index: true,
               element: <AgencyListPage />,
             },
             {
-              path: "add",
+              path: 'add',
               element: <AddPostPage />,
             },
             {
-              path: "view/:id",
+              path: 'view/:id',
               element: <ViewPostPage />,
             },
             {
-              path: "edit/:id",
+              path: 'edit/:id',
               element: <UpdatePostPage />,
             },
           ],
         },
         {
-          path: "info",
+          path: 'info',
           children: [
             {
               index: true,
               element: <AgencyInfoPage />,
             },
             {
-              path: "edit",
+              path: 'edit',
               element: <EditInfoPage />,
             },
           ],
         },
         {
-          path: "notifications",
+          path: 'notifications',
           element: <NotificationPage />,
+        },
+        {
+          path: 'statistics',
+          element: <StatistcsPage />,
         },
       ],
     },

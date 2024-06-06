@@ -1,17 +1,14 @@
 import propTypes from 'prop-types';
 import SideBar from './SideBar';
-import { useDispatch } from 'react-redux';
-import { checkOptions } from 'src/redux/slices/header';
-
+import Header from './Header';
 const DashboardLayout = ({ children }) => {
-  const dispatch = useDispatch();
   return (
-    <div
-      className="flex bg-[white]"
-      // onClick={() => dispatch(checkOptions(false))}
-    >
+    <div className="flex bg-[white]">
       <SideBar />
-      <div className="ml-[250px]">{children}</div>
+      <div className="flex flex-col">
+        <Header />
+        <div className="ml-[250px]">{children}</div>
+      </div>
     </div>
   );
 };
