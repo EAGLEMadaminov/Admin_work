@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-
-const CustomCheckBox = ({ label, id, onCheckboxChange }) => {
-  const [checked, setChecked] = useState(false);
-
+const CustomCheckBox = ({ label, onChange, checked }) => {
   return (
     <div>
       <label className="flex items-center space-x-2 cursor-pointer">
@@ -10,18 +6,15 @@ const CustomCheckBox = ({ label, id, onCheckboxChange }) => {
           type="checkbox"
           className="hidden"
           checked={checked}
-          onChange={(e) => {
-            onCheckboxChange(e);
-            setChecked(e.target.checked);
-          }}
+          onChange={onChange}
         />
-
         {checked ? (
           <svg
             width="20"
             height="20"
             viewBox="0 0 20 20"
             fill="none"
+            className="flex-shrink-0"
             xmlns="http://www.w3.org/2000/svg"
           >
             <rect
@@ -49,7 +42,7 @@ const CustomCheckBox = ({ label, id, onCheckboxChange }) => {
             />
           </svg>
         ) : (
-          <div className="w-5 h-5 border rounded-[6px] "></div>
+          <div className="w-5 h-5 block border rounded-[6px] flex-shrink-0 border-[#D0D5DD]"></div>
         )}
         <span className="text-[14px] font-[500] text-[#1B2126]">{label}</span>
       </label>
