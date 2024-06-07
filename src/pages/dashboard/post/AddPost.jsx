@@ -1,5 +1,4 @@
-import React from "react";
-import PostForm from "src/features/agency/post/PostForm";
+import PostForm from 'src/features/agency/post/PostForm';
 
 const AddPost = () => {
   return (

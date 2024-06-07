@@ -406,4 +406,80 @@ const Facilities = [
     label: 'restoran',
   },
 ];
-export { posts, countries, agencies, Facilities };
+
+const LineChartData = {
+  labels: [
+    'Янв',
+    'Фев',
+    'Мар',
+    'Апр',
+    'Май',
+    'Июн',
+    'Июл',
+    'Авг',
+    'Сен',
+    'Окт',
+    'Ноя',
+    'Дек',
+  ],
+  datasets: [
+    {
+      label: 'Станбул',
+      data: [
+        3000, 4000, 6000, 6500, 7000, 8000, 4000, 5000, 9000, 2000, 12000,
+        15000,
+      ],
+      borderColor: '#95A4FC',
+    },
+    {
+      label: 'Дубай',
+      data: [
+        5000, 6000, 3000, 8500, 12000, 23000, 6000, 2000, 9000, 12000, 5000,
+        17000,
+      ],
+      borderColor: '#FFBB55',
+    },
+    {
+      label: 'Париж',
+      data: [
+        1000, 3000, 7000, 8500, 12000, 3000, 23000, 25000, 9000, 12000, 20000,
+        17000,
+      ],
+      borderColor: '#A1E3CB',
+    },
+  ],
+};
+const barChartData = {
+  labels: ['Станбул', 'Дубай', 'Анталия', 'Париж', 'Мекка'],
+  datasets: [
+    {
+      label: 'Продано',
+      data: [1000, 400, 550, 600, 1000],
+      backgroundColor: '#5488CF',
+    },
+    {
+      label: 'Просмотрено',
+      data: [700, 500, 450, 400, 1000],
+      backgroundColor: '#00BEF3',
+    },
+  ],
+};
+const popularCities = {
+  labels: ['Станбул', 'Дубай', 'Анталия', 'Париж', 'Мекка'],
+  datasets: [
+    {
+      label: 'Продано',
+      data: [1000, 400, 550, 600, 1000],
+      backgroundColor: '#5488CF',
+    },
+  ],
+};
+export {
+  posts,
+  countries,
+  agencies,
+  Facilities,
+  LineChartData,
+  barChartData,
+  popularCities,
+};

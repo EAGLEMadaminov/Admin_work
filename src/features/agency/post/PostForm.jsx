@@ -195,7 +195,7 @@ const PostForm = () => {
   return (
     <>
       <form
-        className="space-y-8 w-[600px] mx-auto mt-5"
+        className="space-y-8 w-[600px]  mt-5"
         onSubmit={handleSubmit(handleFormSubmit)}
       >
         <div className="ml-5">

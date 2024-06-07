@@ -31,9 +31,8 @@ const AgebcyListPage = () => {
   }, [token]);
 
   return (
-    <div className="bg-[white] h-[100vh]">
-      
-      <div className="body  w-[calc(100vw-250px)] p-7">
+    <div className="bg-[white] h-[100vh] w-[calc(100vw-300px)]">
+      <div className="body   p-7">
         {packages.length > 0 ? (
           <div>
             <div className="flex w-full justify-between ">

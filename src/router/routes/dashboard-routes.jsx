@@ -15,69 +15,77 @@ import {
 import DashboardLayout from '../../layouts/dashboard/DashboardLayout';
 
 const dashboarRoutes = {
-  path: 'dashboard',
+  path: '',
   element: (
     <DashboardLayout>
       <Suspense fallback={<>Loading...</>}>
-        <MainPage />
         <Outlet />
       </Suspense>
     </DashboardLayout>
   ),
+
   children: [
     {
-      path: 'agency',
-
+      path: 'dashboard',
       children: [
         {
           index: true,
-          element: <AgencyInfoPage />,
+          element: <MainPage />,
         },
         {
-          path: 'help',
-          element: <HelpPage />,
-        },
-        {
-          path: 'posts',
-          children: [
-            {
-              index: true,
-              element: <AgencyListPage />,
-            },
-            {
-              path: 'add',
-              element: <AddPostPage />,
-            },
-            {
-              path: 'view/:id',
-              element: <ViewPostPage />,
-            },
-            {
-              path: 'edit/:id',
-              element: <UpdatePostPage />,
-            },
-          ],
-        },
-        {
-          path: 'info',
+          path: 'agency',
           children: [
             {
               index: true,
               element: <AgencyInfoPage />,
             },
             {
-              path: 'edit',
-              element: <EditInfoPage />,
+              path: 'help',
+              element: <HelpPage />,
+            },
+            {
+              path: 'posts',
+              children: [
+                {
+                  index: true,
+                  element: <AgencyListPage />,
+                },
+                {
+                  path: 'add',
+                  element: <AddPostPage />,
+                },
+                {
+                  path: 'view/:id',
+                  element: <ViewPostPage />,
+                },
+                {
+                  path: 'edit/:id',
+                  element: <UpdatePostPage />,
+                },
+              ],
+            },
+            {
+              path: 'info',
+              children: [
+                {
+                  index: true,
+                  element: <AgencyInfoPage />,
+                },
+                {
+                  path: 'edit',
+                  element: <EditInfoPage />,
+                },
+              ],
+            },
+            {
+              path: 'notifications',
+              element: <NotificationPage />,
+            },
+            {
+              path: 'statistics',
+              element: <StatistcsPage />,
             },
           ],
-        },
-        {
-          path: 'notifications',
-          element: <NotificationPage />,
-        },
-        {
-          path: 'statistics',
-          element: <StatistcsPage />,
         },
       ],
     },
