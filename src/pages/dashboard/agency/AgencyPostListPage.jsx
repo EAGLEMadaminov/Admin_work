@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axiosIsntance from 'src/utils/lib/axios';
-import CustomDropdown from 'src/components/CustimDropdown';
 import { agencies } from 'src/utils/util/fakeData';
 import MainTable from 'src/components/MainTable';
 
