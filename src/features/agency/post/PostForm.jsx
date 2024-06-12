@@ -5,8 +5,7 @@ import axiosIsntance from 'src/utils/lib/axios';
 import { addDays, format } from 'date-fns';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import CustomCheckBox from 'src/components/CustomCheckBox';
-import { Facilities } from 'src/utils/util/fakeData';
-
+import HotelForm from 'src/components/HotelForm';
 const PostForm = () => {
   const [countryList, setCountryList] = useState([]);
   const [showCountries, setShowCountries] = useState(false);
@@ -29,13 +28,15 @@ const PostForm = () => {
     from: new Date(Date.now()),
     to: addDays(Date.now(), 4),
   });
-  const { register, handleSubmit, setValue, getValues, control } = useForm({
+
+  const { register, handleSubmit,  control } = useForm({
     defaultValues: {
       breakfast: false,
       dinner: false,
       night_dinner: false,
     },
   });
+
   const [array, setArray] = useState([
     { id: 1, src: '', islast: false },
     { id: 2, src: '', islast: false },
@@ -184,14 +185,7 @@ const PostForm = () => {
   const handleCheckboxChange = (e) => {
     setSelectAllMeals(e.target.checked);
   };
-  const toggleCheckboxes = () => {
-    setSelectAllMeals(!selectAllMeals);
-    const currentValues = getValues();
-    const newValue = !currentValues.breakfast; // Assuming all checkboxes should have the same value
-    setValue('breakfast', newValue);
-    setValue('dinner', newValue);
-    setValue('night_dinner', newValue);
-  };
+
   return (
     <>
       <form
@@ -430,6 +424,7 @@ const PostForm = () => {
                 id="tour_price"
               />
             </div>
+
             <div>
               <h2 className="font-[500] text-[14px] text-text mb-3">Валюта</h2>
               <button
@@ -448,88 +443,6 @@ const PostForm = () => {
               </button>
             </div>
           </div>
-
-          <div className="flex gap-[60px]  items-end justify-between">
-            <div className=" w-full">
-              <label
-                htmlFor="hotel"
-                className="font-[500] text-[14px] text-text"
-              >
-                Отель<span className="text-[#fa0000]">*</span>
-              </label>
-
-              <input
-                id="hotel"
-                placeholder="Название отеля"
-                {...register('hotel_name')}
-                className="outline-none mt-3 text-[#0042804D] bg-[#EDF2F6]  w-full border border-[#D1DCE5] p-2 py-3 rounded-lg"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label
-                htmlFor="stars"
-                className="font-[500] text-[14px] text-text"
-              >
-                Сколько звезд<span className="text-[#fa0000]">*</span>
-              </label>
-              <div className="relative items-center  mt-3 bg-[#EDF2F6] py-3 border-[#D1DCE5] px-[10px] border rounded-lg">
-                <select
-                  name="starts"
-                  id="stars"
-                  {...register('hotel_stars')}
-                  className="text-[14px] w-[170px] bg-transparent font-[500] text-[#0042804D] outline-none  appearance-none "
-                >
-                  <option value="5" className="options">
-                    5 звезд
-                  </option>
-                  <option value="4" className="options">
-                    4 звезд
-                  </option>
-                  <option value="3" className="options">
-                    3 звезд
-                  </option>
-                  <option value="2" className="options">
-                    2 звезд
-                  </option>
-                  <option value="1" className="options">
-                    1 звезд
-                  </option>
-                </select>
-                <span className="absolute right-2 font-[700] top-5 text-text">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    fill="currentColor"
-                    className="bi bi-chevron-down"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"
-                    />
-                  </svg>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-3">
-            <label
-              htmlFor="hotel_link"
-              className="font-[500] text-[14px] text-text"
-            >
-              Ссылка на отель
-            </label>
-            <input
-              type="url"
-              name=""
-              id="hotel_link"
-              placeholder="Ссылка"
-              className="w-full  mt-3 outline-none py-3 p-2 rounded-lg bg-[#EDF2F6] border border-[#D1DCE5]"
-            />
-          </div>
-          <input type="url" placeholder="" />
           <h3 className="text-[18px] text-text font-semibold my-3">
             Включает в себя
           </h3>
@@ -571,110 +484,8 @@ const PostForm = () => {
               )}
             />
           </div>
-          <h3 className="text-[18px] text-text font-semibold my-3">
-            Доступные планы питания
-          </h3>
-          <div className="flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={toggleCheckboxes}
-              className="flex items-center gap-3 ml-2 "
-            >
-              {selectAllMeals ? (
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  className="flex-shrink-0"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    x="0.5"
-                    y="0.5"
-                    width="19"
-                    height="19"
-                    rx="5.5"
-                    fill="white"
-                  />
-                  <rect
-                    x="0.5"
-                    y="0.5"
-                    width="19"
-                    height="19"
-                    rx="5.5"
-                    stroke="#FF9B06"
-                  />
-                  <path
-                    d="M14.6668 6.5L8.25016 12.9167L5.3335 10"
-                    stroke="#FF9B06"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              ) : (
-                <div className="w-5 h-5 block border rounded-[6px] flex-shrink-0 border-[#D0D5DD]"></div>
-              )}
-              <span className="text-[14px] font-[500] text-[#1B2126]">
-                Все включено
-              </span>
-            </button>
-            <Controller
-              name="breakfast"
-              control={control}
-              render={({ field }) => (
-                <CustomCheckBox
-                  checked={field.value}
-                  onChange={field.onChange}
-                  label="Завтрак включен в стоимость проживания"
-                />
-              )}
-            />
-            <Controller
-              name="dinner"
-              control={control}
-              render={({ field }) => (
-                <CustomCheckBox
-                  checked={field.value}
-                  onChange={field.onChange}
-                  label="Обед включен в стоимость проживания"
-                />
-              )}
-            />
-            <Controller
-              name="night_dinner"
-              control={control}
-              render={({ field }) => (
-                <CustomCheckBox
-                  checked={field.value}
-                  onChange={field.onChange}
-                  label="Ужин включен в стоимость проживания"
-                />
-              )}
-            />
-          </div>
-          <h3 className="text-[18px] text-text font-semibold my-3">Удобства</h3>
-          <div className="flex justify-between flex-wrap">
-            {Facilities.map((item) => {
-              return (
-                <div className="w-1/2 my-2" key={item.id}>
-                  <Controller
-                    name={item.label}
-                    control={control}
-                    render={({ field }) => (
-                      <CustomCheckBox
-                        checked={field.value}
-                        onChange={field.onChange}
-                        label={item.text}
-                      />
-                    )}
-                  />
-                </div>
-              );
-            })}
-          </div>
 
+          <HotelForm />
           <div className="lg:w-[850px]">
             <div className="flex justify-between items-center my-5">
               <h2 className="text-[18px] text-text font-[600]">Фото</h2>

@@ -398,7 +398,7 @@ const Facilities = [
   {
     id: 12,
     text: 'Открытая площадка',
-    label: 'avtopark',
+    label: 'open-way',
   },
   {
     id: 13,
@@ -474,6 +474,7 @@ const popularCities = {
     },
   ],
 };
+
 export {
   posts,
   countries,

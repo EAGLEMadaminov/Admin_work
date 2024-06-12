@@ -1,4 +1,4 @@
-import CustomDropdown from 'src/components/CustimDropdown';
+import CustomDropdown from 'src/components/CustomDropdown';
 import { useNavigate } from 'react-router-dom';
 import { usePathName } from 'src/router/hooks';
 const Header = () => {
@@ -11,6 +11,50 @@ const Header = () => {
   } else if (pathname.includes('statistics')) {
     title = 'Статистика';
   }
+  const options = [
+    {
+      value: 'option1',
+      label: 'Abduvasit',
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          className="bi bi-person-fill"
+          viewBox="0 0 16 16"
+        >
+          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+        </svg>
+      ),
+    },
+    {
+      value: 'option2',
+      label: 'Option 2',
+      icon: (
+        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fillRule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-11.707a1 1 0 10-1.414 1.414L10 10.586 7.707 8.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l4-4z"
+            clipRule="evenodd"
+          />
+        </svg>
+      ),
+    },
+    {
+      value: 'option3',
+      label: 'Option 3',
+      icon: (
+        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fillRule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-11.707a1 1 0 10-1.414 1.414L10 10.586 7.707 8.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l4-4z"
+            clipRule="evenodd"
+          />
+        </svg>
+      ),
+    },
+  ];
   return (
     <div className="flex  ml-[250px] justify-between w-[calc(100vw-255px)] border-b  p-7">
       <h2 className="text-text text-[24px] font-[600]">{title}</h2>
@@ -32,7 +76,7 @@ const Header = () => {
           </svg>
         </button>
 
-        <CustomDropdown />
+        <CustomDropdown options={options} />
       </div>
     </div>
   );
