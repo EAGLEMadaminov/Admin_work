@@ -1,18 +1,17 @@
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "src/components/ui/button";
-import { Input } from "src/components/ui/input";
-import axiosIsntance from "src/utils/lib/axios";
-import { useNavigate } from "react-router-dom";
-import AuthCodeInput from "react-auth-code-input";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import ReactInputMask from "react-input-mask";
-import { useDispatch, useSelector } from "react-redux";
-import { constinueBtn } from "src/redux/slices/auth";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from 'src/components/ui/button';
+import { Input } from 'src/components/ui/input';
+import axiosIsntance from 'src/utils/lib/axios';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import ReactInputMask from 'react-input-mask';
+import { useDispatch, useSelector } from 'react-redux';
+import { constinueBtn } from 'src/redux/slices/auth';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { setShowPhoneVerify } from 'src/redux/slices/auth';
 
 import {
   Form,
@@ -21,36 +20,33 @@ import {
   FormLabel,
   FormMessage,
   FormItem,
-} from "src/components/ui/form";
+} from 'src/components/ui/form';
 
 const formSchame = z.object({
-  name: z.string().min(2, { message: "Required Field" }),
-  phone_number: z.string().min(13, { message: "Please enter correct phone" }),
-  email: z.string().min(7, { message: "Enter correct email" }),
+  name: z.string().min(2, { message: 'Required Field' }),
+  phone_number: z.string().min(13, { message: 'Please enter correct phone' }),
+  email: z.string().min(7, { message: 'Enter correct email' }),
   password: z
     .string()
-    .min(8, { message: "Password must be least 8 characters" }),
-  confirm_password: z
+    .min(8, { message: 'Password must be least 8 characters' }),
+  password2: z
     .string()
-    .min(8, { message: "Password must be least 8 characters" }),
-  address: z.string().min(2, { message: "Address required" }),
-  phone_number_2: z.string().min(13, { message: "Please enter correct phone" }),
-  licencyNumber: z.string().min(2, { message: "License number is required" }),
+    .min(8, { message: 'Password must be least 8 characters' }),
+  address: z.string().min(2, { message: 'Address required' }),
+  phone_client: z.string().min(13, { message: 'Please enter correct phone' }),
+  license_number: z.string().min(2, { message: 'License number is required' }),
 });
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const [imageSrc, setImageSrc] = useState("");
-  const token = localStorage.getItem("access_token");
-  const [sendImage, setSendImage] = useState("");
-  const [phoneValue, setPhoneValue] = useState("");
-  const [phoneError, setPhoneError] = useState("");
+  const [imageSrc, setImageSrc] = useState('');
+  const [sendImage, setSendImage] = useState('');
+  const [phoneValue, setPhoneValue] = useState('');
   const [showActivation, setShowActivation] = useState(false);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(false);
-  const [mapUrl, setMapUrl] = useState(false);
   const [clickCurrent, setClickCurrent] = useState(false);
 
   const handleGeolocationSuccess = (position) => {
@@ -60,7 +56,7 @@ const RegisterForm = () => {
   };
 
   const handleGeolocationError = (error) => {
-    console.error("Error getting geolocation:", error);
+    console.error('Error getting geolocation:', error);
   };
 
   const getCurrentLocation = () => {
@@ -71,7 +67,7 @@ const RegisterForm = () => {
         handleGeolocationError
       );
     } else {
-      console.error("Geolocation is not supported by this browser.");
+      console.error('Geolocation is not supported by this browser.');
     }
   };
   const handleMapClick = (event) => {
@@ -79,8 +75,6 @@ const RegisterForm = () => {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     });
-    const url = `https://www.google.com/maps/@${event.latLng.lat()},${event.latLng.lng()},${15}z`;
-    setMapUrl(url);
   };
 
   const dispatch = useDispatch();
@@ -92,31 +86,35 @@ const RegisterForm = () => {
     },
     zoom: 11,
   };
-  const formatChars = {
-    "-": "[0-9]",
+  const formatchars = {
+    '-': '[0-9]',
   };
   const form = useForm({
     resolver: zodResolver(formSchame),
     defaultValues: {
-      name: "",
-      phone_number: "",
-      email: "",
-      password: "",
-      confirm_password: "",
-      address: "",
-      phone_number_2: "",
-      licencyNumber: "",
+      name: '',
+      phone_number: '',
+      email: '',
+      password: '',
+      password2: '',
+      address: '',
+      phone_client: '',
+      license_number: '',
     },
   });
   const onSubmit = async (data) => {
+    data.logo = imageSrc;
+    data.phone_number = phoneValue.replace(/\s/g, '');
+    data.phone_client = data.phone_client.replace(/\s/g, '');
+    data.lat = selectedLocation.lat;
+    data.long = selectedLocation.lng;
     console.log(data);
-    // data.licence = sendImage;
-    // data.phone_number = phoneValue.replace(/\s/g, "");
-    // data.phone_number_2 = data.phone_number_2.replace(/\s/g, "");
-    // console.log(data);
+    if (data) {
+      dispatch(setShowPhoneVerify(true));
+    }
     // try {
     //   let { data: agency } = await axiosIsntance.post(
-    //     "/admin/agency/register/",
+    //     "/oauth/sign-up/",
     //     data
     //   );
     //   if (agency) {
@@ -142,7 +140,7 @@ const RegisterForm = () => {
     reader.readAsDataURL(file);
     const form = new FormData();
     console.log(file.name);
-    form.append("file", file);
+    form.append('file', file);
     // try {
     //   let { data: imageId } = await axiosIsntance.post("/image-upload/", form, {
     //     headers: {
@@ -157,49 +155,51 @@ const RegisterForm = () => {
     // }
   };
   const onError = (errors) => {
-    console.error("Form submission errors:", errors);
+    console.error('Form submission errors:', errors);
   };
 
   const handleCheckPhoneValueBtn = (value) => {
     setPhoneValue(value);
   };
-  const handleActivation = async (value) => {
-    if (value.length == 5) {
-      let data = {};
-      data.code = value;
-      data.phone_number = phoneValue.replace(/\s/g, "");
 
-      try {
-        let { data: activateInfo } = await axiosIsntance.post(
-          "/auth/activation/",
-          data
-        );
-        if (activateInfo) {
-          console.log(activateInfo);
-          localStorage.setItem("access_token", activateInfo.access_token);
-          localStorage.setItem("refresh_token", activateInfo.refresh_token);
-          setShowActivation(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-  const sendToActivationBtn = async () => {
-    let phone = {};
-    let value = phoneValue.replace(/\s/g, "");
-    phone.phone_number = value;
-    console.log(phone);
-    try {
-      let { data } = await axiosIsntance.post("/auth/sign-up/", phone);
-      if (data) {
-        console.log(data);
-        setShowActivation(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleActivation = async (value) => {
+  //   if (value.length == 5) {
+  //     let data = {};
+  //     data.code = value;
+  //     data.phone_number = phoneValue.replace(/\s/g, '');
+
+  //     try {
+  //       let { data: activateInfo } = await axiosIsntance.post(
+  //         '/auth/activation/',
+  //         data
+  //       );
+  //       if (activateInfo) {
+  //         console.log(activateInfo);
+  //         localStorage.setItem('access_token', activateInfo.access_token);
+  //         localStorage.setItem('refresh_token', activateInfo.refresh_token);
+  //         setShowActivation(false);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
+  // const sendToActivationBtn = async () => {
+  //   let phone = {};
+  //   let value = phoneValue.replace(/\s/g, '');
+  //   phone.phone_number = value;
+  //   console.log(phone);
+  //   try {
+  //     let { data } = await axiosIsntance.post('/auth/sign-up/', phone);
+  //     if (data) {
+  //       console.log(data);
+  //       setShowActivation(true);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   return (
     <>
       <Form {...form}>
@@ -285,10 +285,10 @@ const RegisterForm = () => {
                           </span>
                           <ReactInputMask
                             {...field}
-                            mask="+998 -- --- -- --"
-                            placeholder="+998"
+                            mask="998 -- --- -- --"
+                            placeholder="998"
                             className="w-full p-2 px-3 rounded-lg placeholder:text-[#9BB8CF]  outline-none"
-                            formatChars={formatChars}
+                            formatChars={formatchars}
                           />
                         </div>
                       </FormControl>
@@ -296,27 +296,7 @@ const RegisterForm = () => {
                     </FormItem>
                   )}
                 />
-                <Button
-                  type="button"
-                  className="bg-[#004280]"
-                  onClick={sendToActivationBtn}
-                >
-                  Verify
-                </Button>
               </div>
-              {showActivation ? (
-                <div className="flex my-3 activation-code-div">
-                  <AuthCodeInput length={5} onChange={handleActivation} />
-                </div>
-              ) : (
-                ""
-              )}
-              {phoneError ? (
-                <span className="text-[14px] text-red-500">{phoneError}</span>
-              ) : (
-                ""
-              )}
-
               <FormField
                 control={form.control}
                 name="email"
@@ -350,7 +330,7 @@ const RegisterForm = () => {
                           type="email"
                           placeholder="Введите почту"
                           className=" w-full placeholder:text-[#9BB8CF] border-none focus-visible:ring-offset-0 focus-visible:ring-0 p-2 px-3 rounded-lg outline-none"
-                          formatChars={formatChars}
+                          formatChars={formatchars}
                         />
                       </div>
                     </FormControl>
@@ -390,7 +370,7 @@ const RegisterForm = () => {
                           key="password"
                           id="password"
                           className="border-none placeholder:text-[#9BB8CF] focus-visible:ring-offset-0 focus-visible:ring-0 outline-none"
-                          type={showPassword ? "text" : "password"}
+                          type={showPassword ? 'text' : 'password'}
                           {...field}
                         />
                         <button
@@ -433,12 +413,12 @@ const RegisterForm = () => {
               />
               <FormField
                 control={form.control}
-                name="confirm_password"
-                key="confirm_password"
+                name="password2"
+                key="password2"
                 render={({ field }) => (
                   <FormItem className="w-full mt-3">
                     <FormLabel className="text-[#004280] text-[14px] font-[500]">
-                      Подтвердите пароль{" "}
+                      Подтвердите пароль{' '}
                       <span className="text-rose-500">*</span>
                     </FormLabel>
                     <FormControl>
@@ -463,7 +443,7 @@ const RegisterForm = () => {
                           placeholder="Введите пароль"
                           className="border-none placeholder:text-[#9BB8CF] focus-visible:ring-offset-0 focus-visible:ring-0 outline-none"
                           value={password}
-                          type={showConfirmPassword ? "text" : "password"}
+                          type={showConfirmPassword ? 'text' : 'password'}
                           {...field}
                         />
                         <button
@@ -473,7 +453,7 @@ const RegisterForm = () => {
                             setShowConfirmPassword(!showConfirmPassword)
                           }
                         >
-                          {" "}
+                          {' '}
                           {!showConfirmPassword ? (
                             <span>
                               <svg
@@ -565,7 +545,7 @@ const RegisterForm = () => {
                     </svg>
                   )}
                   {imageSrc ? (
-                    " "
+                    ' '
                   ) : (
                     <p className="text-[#9BB8CF] text-[14px] ">Выберите файл</p>
                   )}
@@ -613,9 +593,9 @@ const RegisterForm = () => {
                 )}
               />
               <div className="mt-3">
-                <LoadScript googleMapsApiKey="AIzaSyCc0zUA5W0c5vo8EwCs_ousutxmJUo7dXo">
+                <LoadScript googleMapsApiKey="AIzaSyDaZ10eIqb3u2d4t9uNBFSrTQUhj1iDP_w">
                   <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "200px" }}
+                    mapContainerStyle={{ width: '100%', height: '200px' }}
                     center={
                       clickCurrent
                         ? selectedLocation
@@ -638,8 +618,8 @@ const RegisterForm = () => {
 
               <FormField
                 constrol={form.control}
-                name="phone_number_2"
-                key="phone_number2"
+                name="phone_client"
+                key="phone_client"
                 render={({ field }) => (
                   <FormItem
                     className="w-full mt-3"
@@ -647,7 +627,7 @@ const RegisterForm = () => {
                     value={phoneValue}
                   >
                     <FormLabel className="text-[#004280] text-[14px] font-[500]">
-                      Телефон для клиентов{" "}
+                      Телефон для клиентов{' '}
                       <span className="text-rose-500">*</span>
                     </FormLabel>
                     <FormControl>
@@ -671,10 +651,10 @@ const RegisterForm = () => {
                         </span>
                         <ReactInputMask
                           {...field}
-                          mask="+998 -- --- -- --"
-                          placeholder="+998"
+                          mask="998 -- --- -- --"
+                          placeholder="998"
                           className="w-full p-2 px-3 placeholder:text-[#9BB8CF] rounded-lg outline-none"
-                          formatChars={formatChars}
+                          formatChars={formatchars}
                         />
                       </div>
                     </FormControl>
@@ -684,7 +664,7 @@ const RegisterForm = () => {
               />
               <FormField
                 constrol={form.control}
-                name="licencyNumber"
+                name="license_number"
                 key="licency"
                 render={({ field }) => (
                   <FormItem className="mt-3">
@@ -727,7 +707,7 @@ const RegisterForm = () => {
       </Form>
 
       {state ? (
-        ""
+        ''
       ) : (
         <p className="text-center mt-10 text-[14px] text-main">
           У вас уже есть учетная запись?
@@ -736,7 +716,7 @@ const RegisterForm = () => {
             className="text-[#0B77E6] ml-2 font-semibold"
           >
             Войти
-          </Link>{" "}
+          </Link>{' '}
         </p>
       )}
     </>

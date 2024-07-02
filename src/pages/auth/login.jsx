@@ -1,13 +1,29 @@
-import login from "../../assets/login3.jpg";
-import LoginForm from "../../features/auth/components/LoginForm.jsx";
-import { Link } from "react-router-dom";
-import Image from "src/assets/auth/auth_image.png";
-import { useSelector } from "react-redux";
-import ResetPassword from "src/features/auth/components/ResetPassword";
-
+import { useState } from 'react';
+import login from '../../assets/login3.jpg';
+import LoginForm from '../../features/auth/components/LoginForm.jsx';
+import { Link } from 'react-router-dom';
+import Image from 'src/assets/auth/auth_image.png';
+import { useSelector } from 'react-redux';
+import ResetPassword from 'src/features/auth/components/ResetPassword';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 const Login = () => {
+  const [user, setUser] = useState(null);
+
   const state = useSelector((store) => store.auth);
   console.log(state.isForgotPassword);
+
+  const handleLoginSuccess = (response) => {
+    const token = response.credential;
+    const decoded = jwtDecode(token);
+    setUser(decoded);
+    console.log('Login Success:', decoded);
+  };
+
+  const handleLoginFailure = (response) => {
+    console.log('Login Failed:', response);
+  };
+
   return (
     <div className="flex justify-center sm:justify-between  h-[100vh]">
       <img src={Image} alt="" className="w-0 object-cover sm:w-[50%]" />
@@ -38,7 +54,21 @@ const Login = () => {
             <div className="mt-[20px]">
               <LoginForm />
               <div className="flex justify-between my-5">
-                <button className="py-[5px] flex items-center text-[12px] px-[10px] text-white font-[500] rounded-lg bg-[#FF9B06]">
+                <GoogleOAuthProvider clientId="1014028294467-ktj01p2tg62aqlgh27qcvmr0fq6krqbb.apps.googleusercontent.com">
+                  <div className="App">
+                    <GoogleLogin
+                      onSuccess={handleLoginSuccess}
+                      onFailure={handleLoginFailure}
+                    />
+                    {user && (
+                      <div>
+                        <h2>Welcome, {user.name}</h2>
+                        <p>Email: {user.email}</p>
+                      </div>
+                    )}
+                  </div>
+                </GoogleOAuthProvider>
+                {/* <button className="py-[5px] flex items-center text-[12px] px-[10px] text-white font-[500] rounded-lg bg-[#FF9B06]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -50,7 +80,7 @@ const Login = () => {
                     <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
                   </svg>
                   Sign up with Google
-                </button>
+                </button> */}
                 <button className="py-[5px] flex items-center text-[12px] px-[10px] border rounded-lg border-[#004280] text-[#004280] font-[500]">
                   <svg
                     width={16}

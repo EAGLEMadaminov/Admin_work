@@ -1,7 +1,9 @@
 import CustomDropdown from 'src/components/CustomDropdown';
 import { useNavigate } from 'react-router-dom';
 import { usePathName } from 'src/router/hooks';
+
 const Header = () => {
+  
   const navigate = useNavigate();
   const pathname = usePathName();
   let title = 'Добро пожаловать';
@@ -11,6 +13,7 @@ const Header = () => {
   } else if (pathname.includes('statistics')) {
     title = 'Статистика';
   }
+
   const options = [
     {
       value: 'option1',
@@ -55,6 +58,7 @@ const Header = () => {
       ),
     },
   ];
+
   return (
     <div className="flex  ml-[250px] justify-between w-[calc(100vw-255px)] border-b  p-7">
       <h2 className="text-text text-[24px] font-[600]">{title}</h2>

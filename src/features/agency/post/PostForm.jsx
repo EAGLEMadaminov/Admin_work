@@ -17,25 +17,18 @@ const PostForm = () => {
   const [showCityFly, setShowCityFly] = useState(false);
   const [flyCityList, setFlyCityList] = useState([]);
   const [images, setImages] = useState([]);
-  const [activities, setActivities] = useState([]);
-  const [options, setOptions] = useState([]);
   const navigate = useNavigate();
   const [showDate, setShowDate] = useState(false);
   const [currency, setCurrency] = useState('yevro');
   const [selectAllMeals, setSelectAllMeals] = useState(false);
   let token = localStorage.getItem('access_token');
+  const [formInfo, setFormInfo] = useState({ hotelForm: {}, all: {} });
   const [date, setDate] = useState({
     from: new Date(Date.now()),
     to: addDays(Date.now(), 4),
   });
 
-  const { register, handleSubmit,  control } = useForm({
-    defaultValues: {
-      breakfast: false,
-      dinner: false,
-      night_dinner: false,
-    },
-  });
+  const { register, handleSubmit, control } = useForm();
 
   const [array, setArray] = useState([
     { id: 1, src: '', islast: false },
@@ -131,38 +124,12 @@ const PostForm = () => {
   };
 
   const handleFormSubmit = async (data) => {
-    let hotel = {};
-    hotel.name = data.hotel_name;
-    hotel.stars = data.hotel_stars;
-    hotel.link = data.hotel_link;
     data.starting_date = format(date.from, 'yyyy-MM-dd');
     data.ending_date = format(date.to, 'yyyy-MM-dd');
     data.images = images;
     data.city_to = choosenCity.id;
     data.city_from = cityFly.id;
-    delete data.hotel_name;
-    delete data.hotel_stars;
-    delete data.hotel_link;
-    console.log(hotel);
-    data.activities = Array.from(new Set(activities));
-    data.options = Array.from(new Set(options));
     console.log(data);
-    try {
-      let { data: hotelId } = await axiosIsntance.post(
-        '/admin/agency/hotels/create/',
-        hotel,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (hotelId) {
-        data.hotels = [hotelId?.data?.id];
-      }
-    } catch (error) {
-      console.log(error);
-    }
     console.log(data);
     try {
       let { data: agency } = await axiosIsntance.post(
@@ -186,6 +153,13 @@ const PostForm = () => {
     setSelectAllMeals(e.target.checked);
   };
 
+  const handleHotelSubmit = (data) => {
+    setFormInfo((...prevState) => ({
+      ...prevState,
+      hotel: data,
+    }));
+    console.log(data);
+  };
   return (
     <>
       <form
@@ -485,7 +459,7 @@ const PostForm = () => {
             />
           </div>
 
-          <HotelForm />
+          <HotelForm onSubmit={handleHotelSubmit} />
           <div className="lg:w-[850px]">
             <div className="flex justify-between items-center my-5">
               <h2 className="text-[18px] text-text font-[600]">Фото</h2>

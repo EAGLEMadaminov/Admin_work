@@ -1,8 +1,8 @@
-import axios from "axios";
-const token = localStorage.getItem("access_token");
+import axios from 'axios';
+const token = localStorage.getItem('access_token');
 
 const axiosIsntance = axios.create({
-  baseURL: "http://142.93.183.48/api/v1",
+  baseURL: 'http://16.171.8.250:8000/api/v1',
   withCredentials: false,
   headers: {
     Authorization: token,
@@ -15,9 +15,9 @@ axiosIsntance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
-    if (originalConfig.url !== "/auth/sign-in" && err.response) {
+    if (originalConfig.url !== '/auth/sign-in' && err.response) {
       if (err.response.status === 401 && !originalConfig._retry && !token) {
-        window.location.pathname = "/auth/sign-in";
+        window.location.pathname = '/auth/sign-in';
       }
     }
 

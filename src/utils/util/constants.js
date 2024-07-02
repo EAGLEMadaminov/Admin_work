@@ -1,7 +1,7 @@
 const grant_type = 'password';
-const client_id = '5i68H478aGVpxhatSlqELqmlIBan0iPVuxc5NiRf';
+const client_id = 'ikSviZU3ZJ5amhlWYNZ7BaEIpkZuNdQ87wbTau3m';
 const client_secret =
-  'eEr5hX7L6hNpDY4rt2wy1ZgriUFiRlWUK9EI178LoWp5ExQeodEjSIvaPoksQDchdI3JXhicTx9s1HDGR2LfEpmz5izOygX3t67RXLMrzqppMktj5AWU1fj96LSCqEZs';
+  'PRioTKIseZbMDcRsxQgEk5Jpb79ZvWj7rGqDJFKr0lVA6WO4HGa8xqpgksIIAeCWYZvT0oVI3TEcClH3voWoXinDyvyCJMSFGdz1BGSDbPSFrFXlvNwRloqSWLoeQmd6';
 
 export { grant_type, client_id, client_secret };
 

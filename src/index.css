@@ -10,7 +10,10 @@
 
 .activation-code-div > div {
   display: flex;
-  gap: 30px;
+  gap: 15px;
+}
+.phone-auth > div {
+  justify-content: space-between;
 }
 .activation-code-div > div input {
   width: 40px;

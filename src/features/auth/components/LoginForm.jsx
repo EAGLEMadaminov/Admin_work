@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "/src/components/ui/button";
-import { Input } from "/src/components/ui/input";
-import { Link } from "react-router-dom";
-import axiosIsntance from "src/utils/lib/axios";
-import { useNavigate } from "react-router-dom";
-import ReactInputMask from "react-input-mask";
-import { useDispatch, useSelector } from "react-redux";
-import { changePassword } from "src/redux/slices/auth";
+import React, { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '/src/components/ui/button';
+import { Input } from '/src/components/ui/input';
+import { Link } from 'react-router-dom';
+import axiosIsntance from 'src/utils/lib/axios';
+import { useNavigate } from 'react-router-dom';
+import ReactInputMask from 'react-input-mask';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePassword } from 'src/redux/slices/auth';
 import {
   Form,
   FormControl,
@@ -17,17 +17,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "src/components/ui/form";
+} from 'src/components/ui/form';
 const grant_type = import.meta.env.VITE_GRANT_TYPE;
 const client_id = import.meta.env.VITE_CLIENT_ID;
 const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 
 const formSchema = z.object({
-  email: z.string().min(13, {
-    message: "Pleace enter correct email",
+  username: z.string().min(13, {
+    message: 'Pleace enter correct email',
   }),
   password: z.string().min(6, {
-    message: "Password must be least 6 charcter",
+    message: 'Password must be least 6 charcter',
   }),
 });
 
@@ -40,15 +40,15 @@ const LoginForm = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      username: '',
+      password: '',
     },
   });
   const formatChars = {
-    "-": "[0-9]",
+    '-': '[0-9]',
   };
   const onSubmit = async (data) => {
-    if (data.email === "" && data.password === "") {
+    if (data.email === '' && data.password === '') {
       setChangeBorder(true);
       return;
     }
@@ -59,13 +59,13 @@ const LoginForm = () => {
 
     try {
       let { data: agencyInfo } = await axiosIsntance.post(
-        "/admin/agency/sign-in/",
+        '/oauth/sign-in/',
         data
       );
       if (agencyInfo) {
-        localStorage.setItem("refresh_token", agencyInfo.refresh_token);
-        localStorage.setItem("access_token", agencyInfo.access_token);
-        navigate("/dashboard");
+        localStorage.setItem('refresh_token', agencyInfo.refresh_token);
+        localStorage.setItem('access_token', agencyInfo.access_token);
+        navigate('/dashboard');
       }
     } catch (error) {
       console.log(error);
@@ -84,7 +84,7 @@ const LoginForm = () => {
       >
         <FormField
           control={form.control}
-          name="email"
+          name="username"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-[#004280] text-[14px] ">
@@ -92,7 +92,7 @@ const LoginForm = () => {
               </FormLabel>
               <FormControl>
                 <div
-                  className={`flex items-center ${changeBorder ? "border-red-500" : ""} border  rounded-lg px-3`}
+                  className={`flex items-center ${changeBorder ? 'border-red-500' : ''} border  rounded-lg px-3`}
                 >
                   <span>
                     <svg
@@ -133,7 +133,7 @@ const LoginForm = () => {
               </FormLabel>
               <FormControl>
                 <div
-                  className={`flex items-center ${changeBorder ? "border-red-500" : ""} px-3 border rounded-lg`}
+                  className={`flex items-center ${changeBorder ? 'border-red-500' : ''} px-3 border rounded-lg`}
                 >
                   <span>
                     <svg
@@ -153,10 +153,10 @@ const LoginForm = () => {
                   </span>
                   <Input
                     placeholder="Enter your password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     className=" focus-visible:ring-0 placeholder:text-[#9BB8CF] focus-visible:ring-offset-0 border-none"
                     {...field}
-                    style={{ outline: "none" }}
+                    style={{ outline: 'none' }}
                   />
                 </div>
               </FormControl>
@@ -165,7 +165,7 @@ const LoginForm = () => {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {" "}
+                {' '}
                 {!showPassword ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

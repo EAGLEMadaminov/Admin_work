@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CustomCheckBox from './CustomCheckBox';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { Facilities } from 'src/utils/util/fakeData';
 
-const HotelForm = () => {
+const HotelForm = ({ onSubmit }) => {
   const [selectAllMeals, setSelectAllMeals] = useState(false);
   const [showOptions, setShowOptions] = useState({ id: -1, show: false });
   const { register, handleSubmit, setValue, getValues, control } = useForm({
@@ -33,7 +33,7 @@ const HotelForm = () => {
     name: 'fileds',
   });
   const hotelCreateBtn = (data) => {
-    console.log(data);
+    onSubmit(data);
   };
   return (
     <div>
@@ -43,7 +43,7 @@ const HotelForm = () => {
         {fields.map((field, index) => {
           return (
             <div
-              key={field.id}
+              key={field.id + index}
               className="hotels my-5 bg-[#EDF2F6] p-5 rounded-xl"
             >
               <div className="flex   items-end gap-[20px] justify-between">
@@ -293,7 +293,10 @@ const HotelForm = () => {
                     <div className="flex justify-between flex-col">
                       {Facilities.map((item) => {
                         return (
-                          <div className="w-1/2 my-1" key={`${item.id_index}`}>
+                          <div
+                            className="w-1/2 my-1"
+                            key={`${item.id + index}`}
+                          >
                             <Controller
                               name={`fields[${index}].${item.label}`}
                               control={control}
@@ -333,6 +336,7 @@ const HotelForm = () => {
             </div>
           );
         })}
+        <button type="submit">Submit</button>
         <button
           type="button"
           className="py-[10px] flex items-center gap-2 mt-5 px-4 rounded-[8px] text-[14px] font-[600] border"

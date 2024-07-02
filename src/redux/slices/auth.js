@@ -1,10 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState: {
     isForgotPassword: false,
     isShowNextRegister: false,
+    showPhoneVerify: false,
   },
   reducers: {
     changePassword: (state, action) => {
@@ -13,8 +14,12 @@ const authSlice = createSlice({
     constinueBtn: (state, action) => {
       state.isShowNextRegister = action.payload;
     },
+    setShowPhoneVerify: (state, action) => {
+      state.showPhoneVerify = action.payload;
+    },
   },
 });
 
-export const { changePassword, constinueBtn } = authSlice.actions;
+export const { changePassword, constinueBtn, setShowPhoneVerify } =
+  authSlice.actions;
 export default authSlice.reducer;
