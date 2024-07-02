@@ -13,27 +13,17 @@ const Login = () => {
   const state = useSelector((store) => store.auth);
   console.log(state.isForgotPassword);
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: (response) => {
+  const handleLoginSuccess = (response) => {
+    const token = response.credential;
+    const decoded = jwtDecode(token);
+    setUser(decoded);
+    console.log(user.email);
+    console.log('Login Success:', decoded);
+  };
 
-      console.log('Login Success:', response);
-      // Handle the response
-    },
-    onError: () => {
-      console.error('Login Failed');
-    },
-  });
-  // const handleLoginSuccess = (response) => {
-  //   const token = response.credential;
-  //   const decoded = jwtDecode(token);
-  //   setUser(decoded);
-  //   console.log(user.email);
-  //   console.log('Login Success:', decoded);
-  // };
-
-  // const handleLoginFailure = (response) => {
-  //   console.log('Login Failed:', response);
-  // };
+  const handleLoginFailure = (response) => {
+    console.log('Login Failed:', response);
+  };
 
   const responseFacebook = (response) => {
     console.log(response);
@@ -68,22 +58,32 @@ const Login = () => {
               <div className="flex justify-between my-5">
                 <GoogleOAuthProvider clientId="1014028294467-ktj01p2tg62aqlgh27qcvmr0fq6krqbb.apps.googleusercontent.com">
                   <div className="App">
-                    <button onClick={googleLogin} className="py-[5px] flex items-center text-[12px] px-[10px] text-white font-[500] rounded-lg bg-[#FF9B06]">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-google mr-2"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
-                      </svg>
-                      Sign up with Google
-                    </button>
+                    <GoogleLogin
+                      onSuccess={handleLoginSuccess}
+                      onFailure={handleLoginFailure}
+                    />
+                    {user && (
+                      <div>
+                        <h2>Welcome, {user.name}</h2>
+                        <p>Email: {user.email}</p>
+                      </div>
+                    )}
                   </div>
                 </GoogleOAuthProvider>
 
+                {/* <button className="py-[5px] flex items-center text-[12px] px-[10px] text-white font-[500] rounded-lg bg-[#FF9B06]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-google mr-2"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
+                  </svg>
+                  Sign up with Google
+                </button> */}
                 <ReactFacebookLogin
                   appId="1088597931155576"
                   autoLoad={true}

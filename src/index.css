@@ -32,11 +32,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 14px;
   color: #004280;
-  border: 1px solid #004280;
-  font-weight: 500;
-  padding: 5px 10px; 
+  border: 1px solid #DADCE0;
+  /* font-weight: 500; */
+  padding: 10px; 
   border-radius: 8px;
 }
 @layer base {
