@@ -28,6 +28,17 @@
 .options {
   padding: 10px;
 }
+.facebook-login {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #004280;
+  border: 1px solid #004280;
+  font-weight: 500;
+  padding: 5px 10px; 
+  border-radius: 8px;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
