@@ -11,7 +11,6 @@ const Login = () => {
   const [user, setUser] = useState(null);
 
   const state = useSelector((store) => store.auth);
-  console.log(state.isForgotPassword);
 
   const handleLoginSuccess = (response) => {
     const token = response.credential;
@@ -86,7 +85,7 @@ const Login = () => {
                 </button> */}
                 <ReactFacebookLogin
                   appId="1088597931155576"
-                  autoLoad={true}
+                  autoLoad={false}
                   fields="name,email,picture"
                   callback={responseFacebook}
                   icon="fa-facebook"
