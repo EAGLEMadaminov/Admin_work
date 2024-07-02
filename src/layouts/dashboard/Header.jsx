@@ -1,9 +1,8 @@
 import CustomDropdown from 'src/components/CustomDropdown';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { usePathName } from 'src/router/hooks';
 
 const Header = () => {
-  
   const navigate = useNavigate();
   const pathname = usePathName();
   let title = 'Добро пожаловать';
@@ -64,6 +63,7 @@ const Header = () => {
       <h2 className="text-text text-[24px] font-[600]">{title}</h2>
 
       <div className="flex gap-5 items-center">
+        <Link to="/auth/sign-in">Login</Link>
         <button
           onClick={() => navigate('/dashboard/agency/notifications')}
           className="p-3 rounded-[10px] bg-[#EDF2F6] text-text "
