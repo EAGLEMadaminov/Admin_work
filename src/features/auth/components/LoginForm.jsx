@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactInputMask from 'react-input-mask';
 import { useDispatch, useSelector } from 'react-redux';
 import { changePassword } from 'src/redux/slices/auth';
+import { grant_type, client_id, client_secret } from 'src/utils/util/constants';
 import {
   Form,
   FormControl,
@@ -18,9 +19,6 @@ import {
   FormLabel,
   FormMessage,
 } from 'src/components/ui/form';
-const grant_type = import.meta.env.VITE_GRANT_TYPE;
-const client_id = import.meta.env.VITE_CLIENT_ID;
-const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 
 const formSchema = z.object({
   username: z.string().min(13, {

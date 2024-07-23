@@ -7,6 +7,7 @@ import ResetPassword from 'src/features/auth/components/ResetPassword';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import ReactFacebookLogin from 'react-facebook-login';
+
 const Login = () => {
   const [user, setUser] = useState(null);
 
@@ -70,7 +71,7 @@ const Login = () => {
                   </div>
                 </GoogleOAuthProvider>
 
-                {/* <button className="py-[5px] flex items-center text-[12px] px-[10px] text-white font-[500] rounded-lg bg-[#FF9B06]">
+                {/* <button className="py-[5px] flex items-center text-[12 px] px-[10px] text-white font-[500] rounded-lg bg-[#FF9B06]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"

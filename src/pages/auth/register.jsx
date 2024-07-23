@@ -11,13 +11,18 @@ import PhonePopup from 'src/components/PhonePopup';
 const Register = () => {
   const state = useSelector((store) => store.auth.isShowNextRegister);
   const showPhoneVerify = useSelector((store) => store.auth.showPhoneVerify);
-  console.log(showPhoneVerify);
   const dispatch = useDispatch();
   return (
-    <div className="flex justify-center sm:justify-between h-[100vh]">
+    <div className="flex  justify-center sm:justify-between ">
       <img src={Image} alt="" className="w-0 object-cover sm:w-[50%]" />
-      {showPhoneVerify && <PhonePopup />}
-      <div className="flex h-[100vh] items-center justify-center my-5 relative flex-col w-[45%] ">
+      {showPhoneVerify && (
+        <div className="fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.4)] z-50">
+          <div className="flex justify-center rounded-xl w-[370px] bg-white p-5 h-[350px]">
+            <PhonePopup />
+          </div>
+        </div>
+      )}
+      <div className="flex items-center justify-center my-5 relative flex-col w-[45%] ">
         {state ? (
           <button
             className=" mr-auto flex items-center gap-5 text-[#004280]"

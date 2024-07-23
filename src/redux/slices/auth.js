@@ -6,6 +6,7 @@ const authSlice = createSlice({
     isForgotPassword: false,
     isShowNextRegister: false,
     showPhoneVerify: false,
+    verifyPhoneNumber: '',
   },
   reducers: {
     changePassword: (state, action) => {
@@ -17,9 +18,16 @@ const authSlice = createSlice({
     setShowPhoneVerify: (state, action) => {
       state.showPhoneVerify = action.payload;
     },
+    getPhoneNumber: (state, action) => {
+      state.verifyPhoneNumber = action.payload;
+    },
   },
 });
 
-export const { changePassword, constinueBtn, setShowPhoneVerify } =
-  authSlice.actions;
+export const {
+  changePassword,
+  constinueBtn,
+  setShowPhoneVerify,
+  getPhoneNumber,
+} = authSlice.actions;
 export default authSlice.reducer;

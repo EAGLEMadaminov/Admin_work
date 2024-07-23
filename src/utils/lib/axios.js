@@ -2,7 +2,7 @@ import axios from 'axios';
 const token = localStorage.getItem('access_token');
 
 const axiosIsntance = axios.create({
-  baseURL: 'http://16.171.8.250:8000/api/v1',
+  baseURL: 'https://tour.xcrm.uz/api/v1',
   withCredentials: false,
   headers: {
     Authorization: token,

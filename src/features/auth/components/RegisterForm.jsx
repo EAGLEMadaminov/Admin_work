@@ -11,7 +11,7 @@ import ReactInputMask from 'react-input-mask';
 import { useDispatch, useSelector } from 'react-redux';
 import { constinueBtn } from 'src/redux/slices/auth';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { setShowPhoneVerify } from 'src/redux/slices/auth';
+import { setShowPhoneVerify, getPhoneNumber } from 'src/redux/slices/auth';
 
 import {
   Form,
@@ -23,7 +23,7 @@ import {
 } from 'src/components/ui/form';
 
 const formSchame = z.object({
-  name: z.string().min(2, { message: 'Required Field' }),
+  fullname: z.string().min(2, { message: 'Required Field' }),
   phone_number: z.string().min(13, { message: 'Please enter correct phone' }),
   email: z.string().min(7, { message: 'Enter correct email' }),
   password: z
@@ -40,18 +40,17 @@ const formSchame = z.object({
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate();
   const [imageSrc, setImageSrc] = useState('');
-  const [sendImage, setSendImage] = useState('');
   const [phoneValue, setPhoneValue] = useState('');
-  const [showActivation, setShowActivation] = useState(false);
   const [password, setPassword] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(false);
   const [clickCurrent, setClickCurrent] = useState(false);
+  const [logoImage, setLogoImage] = useState('');
+  const [gmailError, setGmailError] = useState('');
+  const [phone1Error, setPhone1Error] = useState('');
 
   const handleGeolocationSuccess = (position) => {
     const { latitude, longitude } = position.coords;
-    console.log(latitude, longitude);
     setSelectedLocation({ lat: latitude, lng: longitude });
   };
 
@@ -92,7 +91,7 @@ const RegisterForm = () => {
   const form = useForm({
     resolver: zodResolver(formSchame),
     defaultValues: {
-      name: '',
+      fullname: '',
       phone_number: '',
       email: '',
       password: '',
@@ -103,57 +102,55 @@ const RegisterForm = () => {
     },
   });
   const onSubmit = async (data) => {
-    data.logo = imageSrc;
-    data.phone_number = phoneValue.replace(/\s/g, '');
+    setPhone1Error('');
+    setGmailError('');
+    data.logo = logoImage;
+    const firstNumber = phoneValue.replace(/\s/g, '');
+    data.phone_number = firstNumber;
     data.phone_client = data.phone_client.replace(/\s/g, '');
-    data.lat = selectedLocation.lat;
-    data.long = selectedLocation.lng;
-    console.log(data);
-    if (data) {
-      dispatch(setShowPhoneVerify(true));
+    data.lat = Number(String(selectedLocation.lat).slice(0, 7)).toFixed(3);
+    data.long = Number(String(selectedLocation.lng).slice(0, 7)).toFixed(3);
+    try {
+      let { data: agency } = await axiosIsntance.post('/oauth/sign-up/', data);
+      if (agency) {
+        dispatch(getPhoneNumber(firstNumber));
+        dispatch(setShowPhoneVerify(true));
+      }
+    } catch (error) {
+      if (error.response.data?.email) {
+        dispatch(constinueBtn(false));
+        setGmailError("Bu email oldin registratsiyadan o'tgan");
+      }
+      if (error.response.data?.phone_number) {
+        dispatch(constinueBtn(false));
+        setPhone1Error("Bu raqam oldin registratsiyadan o'tgan");
+      }
     }
-    // try {
-    //   let { data: agency } = await axiosIsntance.post(
-    //     "/oauth/sign-up/",
-    //     data
-    //   );
-    //   if (agency) {
-    //     console.log(agency);
-    //     navigate("/dashboard/agency");
-    //     setShowActivation(true);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error(error?.response?.data?.detail);
-    //   toast.error(error?.response?.data?.non_field_errors[0]);
-    //   toast.error(error?.response?.data?.tg_username?.detail);
-    //   toast.error(error?.response?.data[0]);
-    // }
   };
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    reader.onload = () => {
-      setImageSrc(file.name);
+    reader.onload = async () => {
+      setImageSrc(reader.result);
     };
+    try {
+      let formData = new FormData();
+      formData.append('file', file);
+      const { data } = await axiosIsntance.post('/file/upload/', formData, {
+        header: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (data) {
+        setLogoImage(data.file);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     reader.readAsDataURL(file);
-    const form = new FormData();
-    console.log(file.name);
-    form.append('file', file);
-    // try {
-    //   let { data: imageId } = await axiosIsntance.post("/image-upload/", form, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   });
-    //   if (imageId && imageId.image) {
-    //     setSendImage(imageId.image);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
+
   const onError = (errors) => {
     console.error('Form submission errors:', errors);
   };
@@ -161,44 +158,6 @@ const RegisterForm = () => {
   const handleCheckPhoneValueBtn = (value) => {
     setPhoneValue(value);
   };
-
-  // const handleActivation = async (value) => {
-  //   if (value.length == 5) {
-  //     let data = {};
-  //     data.code = value;
-  //     data.phone_number = phoneValue.replace(/\s/g, '');
-
-  //     try {
-  //       let { data: activateInfo } = await axiosIsntance.post(
-  //         '/auth/activation/',
-  //         data
-  //       );
-  //       if (activateInfo) {
-  //         console.log(activateInfo);
-  //         localStorage.setItem('access_token', activateInfo.access_token);
-  //         localStorage.setItem('refresh_token', activateInfo.refresh_token);
-  //         setShowActivation(false);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
-  // const sendToActivationBtn = async () => {
-  //   let phone = {};
-  //   let value = phoneValue.replace(/\s/g, '');
-  //   phone.phone_number = value;
-  //   console.log(phone);
-  //   try {
-  //     let { data } = await axiosIsntance.post('/auth/sign-up/', phone);
-  //     if (data) {
-  //       console.log(data);
-  //       setShowActivation(true);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
     <>
@@ -211,8 +170,8 @@ const RegisterForm = () => {
             <div>
               <FormField
                 control={form.control}
-                name="name"
-                key="name"
+                name="fullname"
+                key="fullname"
                 className="active:border-none"
                 render={({ field }) => (
                   <FormItem className="w-full active:border-none relative border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
@@ -297,6 +256,11 @@ const RegisterForm = () => {
                   )}
                 />
               </div>
+              {phone1Error ? (
+                <p className="text-red-500 text-[12px]">{phone1Error}</p>
+              ) : (
+                ''
+              )}
               <FormField
                 control={form.control}
                 name="email"
@@ -337,6 +301,11 @@ const RegisterForm = () => {
                   </FormItem>
                 )}
               />
+              {gmailError ? (
+                <p className="text-red-500 text-[12px]">{gmailError}</p>
+              ) : (
+                ''
+              )}
               <FormField
                 control={form.control}
                 name="password"
@@ -489,13 +458,13 @@ const RegisterForm = () => {
                   </FormItem>
                 )}
               />
-              <Button
+              <button
                 onClick={() => dispatch(constinueBtn(true))}
                 type="button"
-                className="w-full mt-3 bg-[#004280]"
+                className="w-full p-[10px] px-[13px] hover:bg-primary/90 text-white rounded-[8px] mt-3 bg-[#004280]"
               >
                 Далее
-              </Button>
+              </button>
             </div>
           ) : (
             <div>
@@ -519,6 +488,7 @@ const RegisterForm = () => {
                     className="opacity-0 absolute"
                     id="image"
                     key="file"
+                    readOnly
                     onChange={handleImageChange}
                     placeholder="Выберите файл"
                     accept="image/png, image/jpg, image/jpeg, image/webp, image/heic"
