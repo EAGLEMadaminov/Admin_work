@@ -53,7 +53,6 @@ const LoginForm = () => {
     data.grant_type = grant_type;
     data.client_id = client_id;
     data.client_secret = client_secret;
-    console.log(data);
 
     try {
       let { data: agencyInfo } = await axiosIsntance.post(

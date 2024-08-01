@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import axiosIsntance from 'src/utils/lib/axios';
@@ -6,6 +6,8 @@ import { addDays, format } from 'date-fns';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import CustomCheckBox from 'src/components/CustomCheckBox';
 import HotelForm from 'src/components/HotelForm';
+import { useSelector } from 'react-redux';
+
 const PostForm = () => {
   const [countryList, setCountryList] = useState([]);
   const [showCountries, setShowCountries] = useState(false);
@@ -19,8 +21,9 @@ const PostForm = () => {
   const [images, setImages] = useState([]);
   const navigate = useNavigate();
   const [showDate, setShowDate] = useState(false);
-  const [currency, setCurrency] = useState('yevro');
+  const [currency, setCurrency] = useState('euro');
   const [selectAllMeals, setSelectAllMeals] = useState(false);
+  const hotels = useSelector((store) => store.post.hotels);
   let token = localStorage.getItem('access_token');
   const [formInfo, setFormInfo] = useState({ hotelForm: {}, all: {} });
   const [date, setDate] = useState({
@@ -47,7 +50,7 @@ const PostForm = () => {
     formData.append('file', file);
     try {
       let { data: imageId } = await axiosIsntance.post(
-        '/image-upload/',
+        '/file/upload/',
         formData,
         {
           headers: {
@@ -55,8 +58,8 @@ const PostForm = () => {
           },
         }
       );
-      if (imageId && imageId.image) {
-        setImages([...images, imageId.image]);
+      if (imageId && imageId.file) {
+        setImages([...images, imageId.file]);
       }
     } catch (error) {
       console.log(error);
@@ -88,33 +91,32 @@ const PostForm = () => {
 
   const handleSearchCountryBtn = async (e) => {
     setChoosenCountry(e.target.value);
-    const value = `/country/?country=${e.target.value}`;
-    const result = await searchFunction(value);
-    if (result) {
+    const value = `/geo/city/list/?city=&country=${e.target.value}`;
+    const { results } = await searchFunction(value);
+    if (results) {
       setShowCountries(true);
-      setCountryList(result.country_list);
+      setCountryList(results);
     }
   };
 
   const handleChooseCity = async (e) => {
     setChoosenCity(e.target.value);
-    const value = `/city/?country=${choosenCountry}&city=${e.target.value}`;
-    const res = await searchFunction(value);
-    if (res) {
-      console.log(res);
+    const value = `/geo/city/list/?city=${e.target.value}&country=${choosenCountry.name}`;
+    const { results } = await searchFunction(value);
+    if (results) {
       setShowCities(true);
-      setCityList(res.city_list);
+      setCityList(results);
     }
   };
 
   const handleFlyCityBtn = async (e) => {
     setCityFly(e.target.value);
-    const value = `/city/?country=Uzbekistan&city=${e.target.value}`;
-    const res = await searchFunction(value);
-    if (res) {
+    const value = `/geo/city/list/?city=${e.target.value}&country=Uzbekistan`;
+    const { results } = await searchFunction(value);
+    if (results) {
       setShowCityFly(true);
 
-      setFlyCityList(res.city_list);
+      setFlyCityList(results);
     }
   };
 
@@ -123,24 +125,40 @@ const PostForm = () => {
     setDate({ from: new Date(e[0]), to: new Date(e[1]) });
   };
 
-  const handleFormSubmit = async (data) => {
-    data.starting_date = format(date.from, 'yyyy-MM-dd');
-    data.ending_date = format(date.to, 'yyyy-MM-dd');
+  const handleFormSubmit = async (data, e) => {
+    e.preventDefault();
+    delete data.city_from;
+    delete data.city_to;
+    delete data.country;
+    data.hotels = hotels;
+    data.currency = currency;
+    data.included_items = [];
+    if (data.git) {
+      data.included_items.push(1);
+    }
+    if (data.insurance) {
+      data.included_items.push(2);
+    }
+    if (data.ticket) {
+      data.included_items.push(3);
+    }
+    delete data.git;
+    delete data.insurance;
+    delete data.ticket;
+
+    data.departure_date = format(date.from, 'yyyy-MM-dd');
+    data.return_date = format(date.to, 'yyyy-MM-dd');
     data.images = images;
-    data.city_to = choosenCity.id;
-    data.city_from = cityFly.id;
-    console.log(data);
+    data.to_city = choosenCity.id;
+    data.from_city = cityFly.id;
+    data.to_country = choosenCountry.id;
     console.log(data);
     try {
-      let { data: agency } = await axiosIsntance.post(
-        '/admin/agency/packages/create/',
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let { data: agency } = await axiosIsntance.post('/package/posts/', data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (agency) {
         navigate('/dashboard/agency/posts');
       }
@@ -153,12 +171,12 @@ const PostForm = () => {
     setSelectAllMeals(e.target.checked);
   };
 
-  const handleHotelSubmit = (data) => {
+  const handleHotelSubmit = (data, e) => {
+    e.preventDefault();
     setFormInfo((...prevState) => ({
       ...prevState,
       hotel: data,
     }));
-    console.log(data);
   };
   return (
     <>
@@ -184,7 +202,7 @@ const PostForm = () => {
           <input
             id="tour_name"
             placeholder="Введите название"
-            {...register('title', { required: true })}
+            {...register('package_name', { required: true })}
             required
             className="border bg-[#EDF2F6] placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
           />
@@ -201,9 +219,8 @@ const PostForm = () => {
                 type="search"
                 id="country"
                 placeholder="Выберите страну"
-                {...register('country', { required: true })}
                 className="border bg-[#EDF2F6] placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
-                value={choosenCountry}
+                value={choosenCountry.name}
                 required
                 onChange={handleSearchCountryBtn}
               />
@@ -214,12 +231,12 @@ const PostForm = () => {
                     return (
                       <li
                         onClick={() => {
-                          setChoosenCountry(item);
+                          setChoosenCountry(item.country);
                           setShowCountries(false);
                         }}
                         key={index}
                       >
-                        {item}
+                        {item.country.name}
                       </li>
                     );
                   })}
@@ -238,7 +255,6 @@ const PostForm = () => {
               <input
                 type="search"
                 id="city"
-                {...register('city_to', { required: true })}
                 // ref={city1Ref}
                 className="border bg-[#EDF2F6]  placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
                 placeholder="Выберите город"
@@ -281,7 +297,6 @@ const PostForm = () => {
               className="border bg-[#EDF2F6] placeholder:text-[#0042804D]  w-full p-2 mt-1 mb-5 rounded-lg border-[#D1DCE5]"
               placeholder="Выберите город"
               // ref={city2Ref}
-              {...register('city_from', { required: true })}
               onChange={handleFlyCityBtn}
               value={cityFly.name}
             />
@@ -410,8 +425,8 @@ const PostForm = () => {
               </button>
               <button
                 type="button"
-                onClick={() => setCurrency('yevro')}
-                className={`py-3 w-[80px] ml-3 px-[10px] ${currency === 'yevro' ? 'bg-text text-white' : 'bg-[#EDF2F6] text-[#0042804D]'} rounded-lg text-[14px] font-[500]`}
+                onClick={() => setCurrency('euro')}
+                className={`py-3 w-[80px] ml-3 px-[10px] ${currency === 'euro' ? 'bg-text text-white' : 'bg-[#EDF2F6] text-[#0042804D]'} rounded-lg text-[14px] font-[500]`}
               >
                 Y.e
               </button>
@@ -459,7 +474,7 @@ const PostForm = () => {
             />
           </div>
 
-          <HotelForm onSubmit={handleHotelSubmit} />
+          <HotelForm />
           <div className="lg:w-[850px]">
             <div className="flex justify-between items-center my-5">
               <h2 className="text-[18px] text-text font-[600]">Фото</h2>

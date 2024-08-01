@@ -347,38 +347,38 @@ const Facilities = [
   },
   {
     id: 2,
-    text: 'Спа',
-    label: 'spa',
-  },
-  {
-    id: 3,
     text: 'Вид на океан',
     label: 'sea',
   },
   {
-    id: 4,
+    id: 3,
     text: 'Гидромассажная ванна',
     label: 'masage',
   },
   {
+    id: 4,
+    text: 'Аквапарк',
+    label: 'akvapark',
+  },
+  {
     id: 5,
+    text: 'Спа',
+    label: 'spa',
+  },
+  {
+    id: 6,
     text: 'Возможно размещение с домашними животными',
     label: 'pet',
   },
   {
-    id: 6,
+    id: 7,
     text: 'Трансфер от /до аэропорта включен в стоимость',
     label: 'transfer',
   },
   {
-    id: 7,
+    id: 8,
     text: 'Тренажерный зал',
     label: 'train',
-  },
-  {
-    id: 8,
-    text: 'Аквапарк',
-    label: 'akvapark',
   },
   {
     id: 9,

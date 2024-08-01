@@ -2,38 +2,94 @@ import { useState } from 'react';
 import CustomCheckBox from './CustomCheckBox';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { Facilities } from 'src/utils/util/fakeData';
+import axiosIsntance from '../utils/lib/axios';
+import { useDispatch } from 'react-redux';
+import { getHotels } from '../redux/slices/post';
 
-const HotelForm = ({ onSubmit }) => {
+const HotelForm = () => {
   const [selectAllMeals, setSelectAllMeals] = useState(false);
   const [showOptions, setShowOptions] = useState({ id: -1, show: false });
+  const dispatch = useDispatch();
+
   const { register, handleSubmit, setValue, getValues, control } = useForm({
     defaultValues: {
       fields: [
         {
-          breakfast: false,
-          dinner: false,
-          night_dinner: false,
           hotel: '',
           hotel_star: 5,
           hotel_price: '',
+          dining_plans: {
+            breakfast: false,
+            dinner: false,
+            night_dinner: false,
+          },
+          amenities: Facilities.reduce((acc, facility) => {
+            acc[facility.label] = false;
+            return acc;
+          }, {}),
         },
       ],
     },
   });
+
   const toggleCheckboxes = (index) => {
     const currentValues = getValues(`fields[${index}]`);
     const newValue = !currentValues.breakfast;
-    setValue(`fields[${index}].breakfast`, newValue);
-    setValue(`fields[${index}].dinner`, newValue);
-    setValue(`fields[${index}].night_dinner`, newValue);
+    setValue(`fields[${index}].dining_plans.breakfast`, newValue);
+    setValue(`fields[${index}].dining_plans.dinner`, newValue);
+    setValue(`fields[${index}].dining_plans.night_dinner`, newValue);
     setSelectAllMeals(newValue);
   };
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'fileds',
+    name: 'fields',
   });
-  const hotelCreateBtn = (data) => {
-    onSubmit(data);
+  const hotelCreateBtn = async (data) => {
+    let token = localStorage.getItem('access_token');
+    // Iterate over each field
+    const hotels = data.fields.map((field, index) => {
+      const hotel = {
+        name: field.hotel,
+        price: field.hotel_price,
+        url: field.url,
+        stars: field.hotel_star,
+      };
+
+      // Get selected dining plans with their indices
+      hotel.dining_plans = getSelectedDiningPlanIndices(field);
+
+      // Get selected amenities with their indices
+      hotel.amenities = getSelectedAmenityIndices(field);
+      hotel.post = index + 1;
+      return hotel;
+    });
+    dispatch(getHotels(hotels));
+    // try {
+    //   const { data } = await axiosIsntance.post('/package/hotels/', hotels[0], {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    //   if (data) {
+    //     console.log(data);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+
+  const getSelectedDiningPlanIndices = (field) => {
+    const diningPlanKeys = Object.keys(field.dining_plans);
+    return diningPlanKeys
+      .map((key, index) => (field.dining_plans[key] ? index + 1 : -1))
+      .filter((index) => index !== -1);
+  };
+
+  const getSelectedAmenityIndices = (field) => {
+    const amenityKeys = Object.keys(field.amenities);
+    return amenityKeys
+      .map((key, index) => (field.amenities[key] ? index + 1 : -1))
+      .filter((index) => (index = index + 1));
   };
   return (
     <div>
@@ -58,7 +114,8 @@ const HotelForm = ({ onSubmit }) => {
                   <input
                     id="hotel"
                     placeholder="Название отеля"
-                    className="outline-none mt-3 text-[#0042804D]  w-full border border-[#D1DCE5] p-2 py-3 rounded-lg"
+                    {...register(`fields[${index}].hotel`, { required: true })}
+                    className="outline-none mt-3   w-full border border-[#D1DCE5] p-2 py-3 rounded-lg"
                   />
                 </div>
                 <div className="flex flex-col w-[170px]">
@@ -73,6 +130,9 @@ const HotelForm = ({ onSubmit }) => {
                       id="hotel_price"
                       placeholder="Сумма"
                       type="number"
+                      {...register(`fields[${index}].hotel_price`, {
+                        required: true,
+                      })}
                       className="outline-none no-spinners w-full rounded-lg"
                     />
                     <span className="text-text font-[600]">$</span>
@@ -91,6 +151,7 @@ const HotelForm = ({ onSubmit }) => {
                     type="url"
                     name=""
                     id="hotel_link"
+                    {...register(`fields[${index}].url`, { required: true })}
                     placeholder="Ссылка"
                     className="w-full  mt-3 outline-none py-3 p-2 rounded-lg border border-[#D1DCE5]"
                   />
@@ -254,7 +315,7 @@ const HotelForm = ({ onSubmit }) => {
                         </span>
                       </button>
                       <Controller
-                        name={`fields[${index}].breakfast`}
+                        name={`fields[${index}].dining_plans.breakfast`}
                         control={control}
                         render={({ field }) => (
                           <CustomCheckBox
@@ -265,7 +326,7 @@ const HotelForm = ({ onSubmit }) => {
                         )}
                       />
                       <Controller
-                        name={`fields[${index}].dinner`}
+                        name={`fields[${index}].dining_plans.dinner`}
                         control={control}
                         render={({ field }) => (
                           <CustomCheckBox
@@ -276,7 +337,7 @@ const HotelForm = ({ onSubmit }) => {
                         )}
                       />
                       <Controller
-                        name={`fields[${index}].night_dinner`}
+                        name={`fields[${index}].dining_plans.night_dinner`}
                         control={control}
                         render={({ field }) => (
                           <CustomCheckBox
@@ -298,7 +359,7 @@ const HotelForm = ({ onSubmit }) => {
                             key={`${item.id + index}`}
                           >
                             <Controller
-                              name={`fields[${index}].${item.label}`}
+                              name={`fields[${index}].amenities.${item.label}`}
                               control={control}
                               render={({ field }) => (
                                 <CustomCheckBox
@@ -318,9 +379,6 @@ const HotelForm = ({ onSubmit }) => {
                 )}
               </div>
               <div className="flex justify-between">
-                <button className="py-[10px] px-4 rounded-[8px] bg-text text-white mt-3">
-                  Сохранить
-                </button>
                 {index > 0 ? (
                   <button
                     type="button"
@@ -336,7 +394,12 @@ const HotelForm = ({ onSubmit }) => {
             </div>
           );
         })}
-        <button type="submit">Submit</button>
+        <button
+          onClick={handleSubmit(hotelCreateBtn)}
+          className="py-[10px] px-4 rounded-[8px] bg-text text-white mt-3"
+        >
+          Отправка
+        </button>
         <button
           type="button"
           className="py-[10px] flex items-center gap-2 mt-5 px-4 rounded-[8px] text-[14px] font-[600] border"
